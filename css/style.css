@@ -3,7 +3,7 @@
 @mixin name - function (used @include name(param))
 $name - variable
 */
-canvas, .color-modal .colors-edit div svg, .color-modal .modal-button svg {
+canvas, .color-modal .colors-edit div svg, .color-modal .modal-button svg, .rotator, .rotator:after {
   position: absolute;
   left: 0;
   right: 0;
@@ -19,6 +19,7 @@ canvas, .color-modal .colors-edit div svg, .color-modal .modal-button svg {
 body {
   margin: 0;
   background: whitesmoke;
+  overflow: hidden;
 }
 
 canvas {
@@ -209,4 +210,26 @@ canvas {
 }
 .color-modal .modal-confirm:hover {
   color: #0076d6;
+}
+
+.rotator {
+  z-index: 10;
+  height: 20px;
+  width: 20px;
+  background: black;
+  border-radius: 100%;
+}
+.rotator:after {
+  content: "";
+  height: 0;
+  width: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 10px solid white;
+}
+
+.debug {
+  width: 100%;
+  position: absolute;
+  left: 0;
 }

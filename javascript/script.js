@@ -6,10 +6,19 @@ let vertCount = [20, 10];
 let verts = [];
 let canvasSize = [2560, 1440];
 let rotation = 0;
-let colors = ["#111", "#640064", "orange", "green", "blue"];
+let colors = ["#eb640a", "#faffad", "#c7ffad", "#98fb6a", "#53c021", "#084200"];
 let tempColors = [];
 let gradAngle = 0;
 let radialGradient = false;
+let gradMode = "calculate"; // snap or calculate
+
+let Debug = document.querySelector(".debug");
+
+document.querySelector(".rotation").addEventListener("input", function () {
+   gradAngle = this.value;
+   // document.querySelector(".rotator").style.transform = "rotate(" + degToRad(gradAngle) + "rad)";
+   createGradient();
+});
 
 
 function generateVertices() {
@@ -48,7 +57,7 @@ function generateVertices() {
       }
       verts.push(col);
    }
-   console.log(verts);
+   // console.log(verts);
    drawBoxes();
 }
 
@@ -134,6 +143,7 @@ document.querySelector(".modal-confirm").addEventListener("click", function () {
       document.querySelector(".palette").removeChild(document.querySelector(".palette").firstChild);
    }
    showColorPalette();
+   createGradient();
 });
 
 document.querySelector(".modal-cancel").addEventListener("click", function () {
@@ -145,11 +155,14 @@ document.querySelector(".modal-cancel").addEventListener("click", function () {
 });
 
 document.querySelector(".modal-subtract").addEventListener("click", function () {
-   tempColors.pop();
-   while (document.querySelector(".colors-wrap").firstChild) {
-      document.querySelector(".colors-wrap").removeChild(document.querySelector(".colors-wrap").firstChild);
+   if (tempColors.length != 1) {
+      tempColors.pop();
+      while (document.querySelector(".colors-wrap").firstChild) {
+         document.querySelector(".colors-wrap").removeChild(document.querySelector(".colors-wrap").firstChild);
+      }
+      showColorPalette(true);
    }
-   showColorPalette(true);
+   
 });
 
 document.querySelector(".modal-add").addEventListener("click", function () {
@@ -186,22 +199,80 @@ function showColorPalette(refreshEdit = false) {
          tempColors[num] = this.value;
          newEditColor.style.background = this.value;
       });
+      newInput.addEventListener("focus", function () {
+         let num = parseInt(this.classList[1].split("-")[1]);
+         this.value = tempColors[num];
+         newEditColor.style.background = this.value;
+      });
+      newInput.addEventListener("input", function () {
+         this.parentElement.style.background = this.value;
+      });
    }
-   let grad;
-   console.log(colors);
+}
+
+function createGradient() {
+   let grad, x1, y1, x2, y2, xCenterOffset, yCenterOffset;
+   // console.log(colors);
    if (radialGradient) {
 
    } else {
-      let len = 50;
-      // c.translate(canvasSize[0] / 2, canvasSize[1] / 2);
-      // this is probably right
-      // triangle solver: https://www.calculator.net/triangle-calculator.html
-      let xOffsetFromCenter = ((canvasSize[1] / 2) * Math.sin(degToRad(gradAngle))) / (Math.sin(degToRad(180 - 90 - gradAngle)));
-      let yOffsetFromCenter = (xOffsetFromCenter * Math.sin(degToRad(180 - 90 - gradAngle))) / (Math.sin(xOffsetFromCenter));
-      if (xOffsetFromCenter < (-1 * (canvasSize[0] / 2))) {
-         xOffsetFromCenter = (-1 * (canvasSize[0] / 2));
+
+      let intercepting;
+      let radAngle = degToRad(gradAngle);
+
+      let half = gradAngle % 180;
+      let idealDiagonal = Math.atan(canvasSize[1]/canvasSize[0]);
+      if (degToRad(half) > idealDiagonal && degToRad(half) < (Math.PI) - idealDiagonal) {
+         intercepting = "X";
+         if (gradMode == "calculate") {
+            yCenterOffset = (canvasSize[1] / 2);
+            xCenterOffset = (yCenterOffset * Math.sin((Math.PI / 2) - radAngle)) / (Math.sin(radAngle));
+            if (gradAngle > radToDeg(idealDiagonal) && gradAngle > 180) {
+               xCenterOffset *= -1;
+               yCenterOffset *= -1;
+            }
+            x1 = (canvasSize[0] / 2) - xCenterOffset;
+            y1 = (canvasSize[1] / 2) - yCenterOffset;
+            x2 = canvasSize[0] - x1;
+            y2 = canvasSize[1] - y1;
+         } else {
+            x1 = canvasSize[0];
+            y1 = canvasSize[1];
+            x2 = canvasSize[0] - x1;
+            y2 = canvasSize[1] - y1;
+         }
+         
+      } else {
+         intercepting = "Y";
+         if (gradMode == "calculate") {
+            xCenterOffset = (canvasSize[0] / 2);
+            yCenterOffset = (xCenterOffset * Math.sin(radAngle)) / (Math.sin((Math.PI / 2) - radAngle));
+            if (gradAngle > (180 - radToDeg(idealDiagonal)) && gradAngle < 270) {
+               xCenterOffset *= -1;
+               yCenterOffset *= -1;
+            }
+            if (gradAngle == 135) {
+               xCenterOffset *= -1;
+               yCenterOffset *= -1;
+            }
+            x1 = (canvasSize[0] / 2) - xCenterOffset;
+            y1 = (canvasSize[1] / 2) - yCenterOffset;
+            x2 = canvasSize[0] - x1;
+            y2 = canvasSize[1] - y1;
+         } else {
+            x1 = canvasSize[0];
+            y1 = canvasSize[1];
+            x2 = canvasSize[0] - x1;
+            y2 = canvasSize[1] - y1;
+         }
       }
-      grad = c.createLinearGradient(0, 0, 100, 1440);
+
+      // Debug.innerHTML = radToDeg(Math.PI-idealDiagonal).toFixed(2) + " -- "+half+" -- "+radToDeg(idealDiagonal).toFixed(2)+"<br/>"+intercepting+"<br/>"+xCenterOffset+" -- "+yCenterOffset;
+
+      
+
+      // Debug.innerHTML += "<br/>" + "The line derived from angle "+ gradAngle+ " starts at ("+ x1.toFixed(1)+ ","+ y1.toFixed(1)+ ") and ends at ("+ x2.toFixed(1)+ ","+y2.toFixed(1)+ ")";
+      grad = c.createLinearGradient(x1, y1, x2, y2);
       for (let c = 0; c < colors.length; c++) {
          let pos = (1 / (colors.length-1)) * c;
          grad.addColorStop(pos, colors[c]);
@@ -209,12 +280,31 @@ function showColorPalette(refreshEdit = false) {
    }
    c.fillStyle = grad;
    c.fillRect(0, 0, canvasSize[0], canvasSize[1]);
+   c.fillStyle = "black";
+
+   // // c.moveTo(x1, y1);
+   // c.beginPath();
+   // c.arc(x1, y1, 5, 0, Math.PI * 2);
+   // c.fill();
+
+   // // c.moveTo(x2, y2);
+   // c.beginPath();
+   // c.arc(x2, y2, 5, 0, Math.PI * 2);
+   // c.fill();
+
+   // c.moveTo(x1, y1);
+   // c.lineTo(x2, y2);
+   // c.stroke();
 }
 
 function degToRad(deg) {
    return ((deg * Math.PI) / 180);
 }
+function radToDeg(rad) {
+   return ((rad * 180) / Math.PI);
+}
 
 setCanvas();
-// generateVertices();
 showColorPalette();
+createGradient();
+generateVertices();
