@@ -1,0 +1,212 @@
+/*
+%name - reusable styles (used @extend %name)
+@mixin name - function (used @include name(param))
+$name - variable
+*/
+canvas, .color-modal .colors-edit div svg, .color-modal .modal-button svg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+* {
+  user-select: none;
+}
+
+body {
+  margin: 0;
+  background: whitesmoke;
+}
+
+canvas {
+  background: white;
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.preview {
+  width: 70%;
+  height: 100%;
+  position: absolute;
+  right: 0;
+}
+
+.controls {
+  width: 30%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  position: absolute;
+  box-shadow: 5px 0px 5px #ddd;
+  background: white;
+}
+.controls .text-input {
+  height: 100px;
+}
+.controls .range-input {
+  height: 80px;
+}
+.controls .control {
+  width: 90%;
+  background: white;
+  position: relative;
+  margin: auto;
+  left: 0;
+  right: 0;
+}
+.controls .control p {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  position: relative;
+  color: #777;
+}
+.controls .control .palette {
+  margin: auto;
+  position: relative;
+  left: 0;
+  right: 0;
+  height: 40px;
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+  cursor: pointer;
+}
+.controls .control .palette .p-color {
+  height: 40px;
+  flex: 1;
+}
+.controls .control input {
+  margin: auto;
+  border-radius: 100px;
+  background: transparent;
+  position: absolute;
+  left: 0;
+  right: 0;
+  outline: none;
+}
+.controls .control input[type=range] {
+  width: 100%;
+  border: none;
+}
+.controls .control input:not([type=range]) {
+  padding: 10px;
+  width: calc(100% - 22px);
+  border: 1px solid #aaa;
+}
+
+.overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.color-modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  z-index: 20;
+  height: 300px;
+  width: 500px;
+  box-shadow: 0px 0px 8px #555;
+  border-radius: 10px;
+  background: white;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.2s;
+}
+.color-modal .colors-wrap {
+  height: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  bottom: 130px;
+  position: absolute;
+}
+.color-modal .colors-wrap .edit-color {
+  height: 40px;
+  width: 40px;
+  align-self: center;
+  margin: 5px;
+  cursor: pointer;
+}
+.color-modal .colors-wrap .edit-color input {
+  appearance: none;
+  border: none;
+  background: transparent;
+  outline: none;
+  padding: 0;
+  height: inherit;
+  width: inherit;
+  position: relative;
+  opacity: 0;
+}
+.color-modal .colors-edit {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  height: 30px;
+  bottom: 100px;
+  position: absolute;
+}
+.color-modal .colors-edit div {
+  height: 30px;
+  width: 30px;
+  position: relative;
+  cursor: pointer;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.color-modal .colors-edit div svg {
+  color: #222;
+}
+.color-modal .colors-edit div svg:hover {
+  color: #0076d6;
+}
+.color-modal .modal-button {
+  height: 30px;
+  width: 30px;
+  text-align: center;
+  color: white;
+  line-height: 30px;
+  font-family: "Roboto";
+  position: absolute;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.color-modal .modal-cancel {
+  right: 20px;
+  top: 20px;
+  color: #333;
+  transition: 0.1s;
+}
+.color-modal .modal-cancel:hover {
+  color: #ce2222;
+}
+.color-modal .modal-confirm {
+  left: 0px;
+  right: 0px;
+  bottom: 20px;
+  margin: auto;
+  color: #333;
+  transition: 0.1s;
+}
+.color-modal .modal-confirm:hover {
+  color: #0076d6;
+}

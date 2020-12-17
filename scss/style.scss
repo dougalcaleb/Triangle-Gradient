@@ -1,0 +1,207 @@
+@use "ext";
+
+* {
+	user-select: none;
+}
+body {
+   margin: 0;
+   background: whitesmoke;
+}
+
+canvas {
+   background: white;
+   max-width: 90%;
+   max-height: 90%;
+   @extend %center;
+}
+
+.preview {
+   width: 70%;
+   height: 100%;
+   position: absolute;
+   right: 0;
+}
+
+.controls {
+   width: 30%;
+   height: 100%;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-evenly;
+   position: absolute;
+   box-shadow: 5px 0px 5px #ddd;
+   background: white;
+   .text-input {
+      height: 100px;
+   }
+   .range-input {
+      height: 80px;
+   }
+   .control {
+      width: 90%;
+      background: white;
+      position: relative;
+      margin: auto;
+      left: 0;
+      right: 0;
+      p {
+         font-family: "Roboto", sans-serif;
+         font-weight: 400;
+         // font-style: italic;
+         font-size: 12px;
+         position: relative;
+         color: #777;
+      }
+      .palette {
+         margin: auto;
+         // background: orange;
+         position: relative;
+         left: 0;
+         right: 0;
+         height: 40px;
+         width: 100%;
+         display: flex;
+         align-items: stretch;
+         cursor: pointer;
+         .p-color {
+            height: 40px;
+            flex: 1;
+         }
+      }
+      input {
+         margin: auto;
+         border-radius: 100px;
+         background: transparent;
+         position: absolute;
+         left: 0;
+         right: 0;
+         // color: rgb(23, 140, 235);
+         outline: none;
+      }
+      input[type=range] {
+         width: 100%;
+         border: none;
+      }
+      input:not([type=range]) {
+         padding: 10px;
+         width: calc(100% - 22px);
+         border: 1px solid #aaa;
+      }
+   }
+}
+
+.overlay {
+   position: absolute;
+   left: 0;
+   right: 0;
+   top: 0;
+   bottom: 0;
+   height: 100%;
+   width: 100%;
+   background: rgba(0,0,0,0.2);
+   z-index: 10;
+   visibility: hidden;
+   opacity: 0;
+   transition: 0.3s;
+}
+
+.color-modal {
+   position: fixed;
+   left: 0;
+   top: 0;
+   right: 0;
+   bottom: 0;
+   margin: auto;
+   z-index: 20;
+   height: 300px;
+   width: 500px;
+   box-shadow: 0px 0px 8px #555;
+   border-radius: 10px;
+   background: white;
+   opacity: 0;
+   visibility: hidden;
+   transition: 0.2s;
+   .colors-wrap {
+      height: 50px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      bottom: 130px;
+      position: absolute;
+      .edit-color {
+         height: 40px;
+         width: 40px;
+         align-self: center;
+         margin: 5px;
+         cursor: pointer;
+         input {
+            appearance: none;
+            border: none;
+            background: transparent;
+            outline: none;
+            padding: 0;
+            height: inherit;
+            width: inherit;
+            position: relative;
+            opacity: 0;
+         }
+      }
+   }
+   .colors-edit {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      height: 30px;
+      bottom: 100px;
+      position: absolute;
+      div {
+         height: 30px;
+         width: 30px;
+         position: relative;
+         cursor: pointer;
+         margin-left: 10px;
+         margin-right: 10px;
+         svg {
+            @extend %center;
+            color: #222;
+            &:hover {
+               color: rgb(0, 118, 214);
+            }
+         }
+      }
+   }
+   .modal-button {
+      height: 30px;
+      width: 30px;
+      text-align: center;
+      color: white;
+      line-height: 30px;
+      font-family: "Roboto";
+      position: absolute;
+      border-radius: 10px;
+      cursor: pointer;
+      svg {
+         @extend %center;
+      }
+   }
+   .modal-cancel {
+      right: 20px;
+      top: 20px;
+      color: #333;
+      transition: 0.1s;
+      &:hover {
+         color: rgb(206, 34, 34);
+      }
+   }
+   .modal-confirm {
+      left: 0px;
+      right: 0px;
+      bottom: 20px;
+      margin: auto;
+      color: #333;
+      transition: 0.1s;
+      &:hover {
+         color: rgb(0, 118, 214);
+      }
+   }
+}

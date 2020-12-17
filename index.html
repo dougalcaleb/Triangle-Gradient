@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Blank</title>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+		<link rel="preconnect" href="https://fonts.gstatic.com" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,500;1,700&family=Ubuntu:ital,wght@0,400;0,500;1,500&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
+	<body>
+		<div class="controls">
+			<div class="control text-input">
+				<p class="desc">HEIGHT</p>
+				<input type="number" id="height" class="height" value="1440" />
+			</div>
+			<div class="control text-input">
+				<p class="desc">WIDTH</p>
+				<input type="number" id="width" class="width" value="2560" />
+			</div>
+			<div class="control range-input">
+				<p class="desc">GRADIENT ROTATION</p>
+				<input type="range" id="rotation" class="rotation" min="0" max="360" step="1" value="0" />
+			</div>
+			<div class="control range-input">
+				<p class="desc">VERTEX VARIANCE</p>
+				<input type="range" id="variance" class="variance" min="0" max="120" step="1" value="30" />
+			</div>
+			<div class="control range-input">
+				<p class="desc">X VERTICES</p>
+				<input type="range" id="size" class="size" min="5" max="100" step="1" value="40" />
+			</div>
+			<div class="control range-input">
+				<p class="desc">Y VERTICES</p>
+				<input type="range" id="size" class="size" min="5" max="100" step="1" value="20" />
+			</div>
+
+			<div class="control">
+				<p class="desc">COLOR PALETTE</p>
+				<div class="palette">
+				</div>
+			</div>
+		</div>
+
+		<div class="color-modal">
+			<div class="colors-wrap"></div>
+			<div class="colors-edit">
+				<div class="modal-add">
+					<svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
+						<path fill="currentColor" d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+					</svg>
+				</div>
+				<div class="modal-subtract">
+					<svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
+						<path fill="currentColor" d="M19,13H5V11H19V13Z" />
+					</svg>
+				</div>
+			</div>
+			<div class="modal-confirm modal-button">
+				<svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
+					<path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
+				</svg>
+			</div>
+			<div class="modal-cancel modal-button">
+				<svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
+					<path
+						fill="currentColor"
+						d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
+					/>
+				</svg>
+			</div>
+		</div>
+
+		<div class="overlay"></div>
+
+		<div class="preview">
+			<canvas></canvas>
+		</div>
+	</body>
+
+	<script src="javascript/script.js"></script>
+</html>
