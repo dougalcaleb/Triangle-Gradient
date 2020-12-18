@@ -23,164 +23,12 @@ let imageData;
 let Debug = document.querySelector(".debug");
 
 /*
-- Only some pieces get the color
-- Quads, not triangles getting colored
+===================================================================================
 
+CONTROLS
+
+===================================================================================
 */
-
-document.querySelector(".rotation").addEventListener("input", function () {
-	gradAngle = this.value;
-	// document.querySelector(".rotator").style.transform = "rotate(" + degToRad(gradAngle) + "rad)";
-	createGradient();
-});
-
-function generateVertices() {
-	// vertCount[0] += 2;
-	let xSpace = canvasSize[0] / (vertCount[0] - 1);
-	let ySpace = canvasSize[1] / (vertCount[1] - 1);
-	for (let a = 0; a < vertCount[0]; a++) {
-		let col = [];
-		for (let b = 0; b < vertCount[1]; b++) {
-			let newPair = [];
-			let posNegX = Math.floor(Math.random() * 2) == 0 ? -1 : 1;
-			let posNegY = Math.floor(Math.random() * 2) == 0 ? -1 : 1;
-
-			if (b == 0) {
-				posNegY = -1;
-			}
-			if (b == vertCount[1] - 1) {
-				posNegY = 1;
-			}
-			if (a == 0) {
-				posNegX = -1;
-			}
-			if (a == vertCount[0] - 1) {
-				posNegX = 1;
-			}
-
-			let x = a * xSpace + Math.floor(Math.random() * (posNegX * (variance / 2)));
-			let y = b * ySpace + Math.floor(Math.random() * (posNegY * (variance / 2)));
-
-			newPair.push(x, y);
-			col.push(newPair);
-
-			if (showVerts) {
-				c.beginPath();
-				c.arc(x, y, 4, 0, Math.PI * 2);
-				c.fill();
-			}
-		}
-		verts.push(col);
-	}
-	// console.log(verts);
-	drawBoxes();
-}
-
-function drawBoxes() {
-   imageData = c.getImageData(0, 0, canvasSize[0], canvasSize[1]);
-   let avgX1, avgX2, avgY1, avgY2;
-	for (let a = 0; a < vertCount[0] - 1; a++) {
-		for (let b = 0; b < vertCount[1] - 1; b++) {
-			c.beginPath();
-			let dir = Math.floor(Math.random() * 2);
-			if (dir == 0) {
-				// \
-
-				avgX1 = (verts[a][b][0] + verts[a + 1][b][0] + verts[a + 1][b + 1][0]) / 3;
-            avgY1 = (verts[a][b][1] + verts[a + 1][b][1] + verts[a + 1][b + 1][1]) / 3;
-            c.fillStyle = getPixelColor(avgX1, avgY1);
-
-				c.moveTo(verts[a][b][0], verts[a][b][1]);
-				c.lineTo(verts[a + 1][b][0], verts[a + 1][b][1]);
-				c.lineTo(verts[a + 1][b + 1][0], verts[a + 1][b + 1][1]);
-            c.closePath();
-            c.fill();
-            if (outline) {
-               c.stroke();
-            }
-
-            if (showAvgs) {
-               c.fillStyle = "black";
-               c.beginPath();
-               c.arc(avgX1, avgY1, 4, 0, Math.PI * 2);
-               c.stroke();
-            }
-            
-            avgX2 = (verts[a][b][0] + verts[a][b + 1][0] + verts[a + 1][b + 1][0]) / 3;
-            avgY2 = (verts[a][b][1] + verts[a][b + 1][1] + verts[a + 1][b + 1][1]) / 3;
-            c.fillStyle = getPixelColor(avgX2, avgY2);
-
-				c.moveTo(verts[a][b][0], verts[a][b][1]);
-				c.lineTo(verts[a][b + 1][0], verts[a][b + 1][1]);
-				c.lineTo(verts[a + 1][b + 1][0], verts[a + 1][b + 1][1]);
-            c.closePath();
-            c.fill();
-				if (outline) {
-               c.stroke();
-            }
-
-            if (showAvgs) {
-               c.fillStyle = "black";
-               c.beginPath();
-               c.arc(avgX2, avgY2, 4, 0, Math.PI * 2);
-               c.stroke();
-            }
-			} else {
-
-				avgX1 = (verts[a][b][0] + verts[a + 1][b][0] + verts[a][b + 1][0]) / 3;
-				avgY1 = (verts[a][b][1] + verts[a + 1][b][1] + verts[a][b + 1][1]) / 3;
-            c.fillStyle = getPixelColor(avgX1, avgY1);
-
-				c.moveTo(verts[a][b][0], verts[a][b][1]);
-				c.lineTo(verts[a + 1][b][0], verts[a + 1][b][1]);
-				c.lineTo(verts[a][b + 1][0], verts[a][b + 1][1]);
-            c.closePath();
-            // c.fill();
-            if (outline) {
-               c.stroke();
-            }
-
-            if (showAvgs) {
-               c.fillStyle = "black";
-               c.beginPath();
-               c.arc(avgX1, avgY1, 4, 0, Math.PI * 2);
-               c.stroke();
-            }
-            
-            avgX2 = (verts[a + 1][b][0] + verts[a][b + 1][0] + verts[a + 1][b + 1][0]) / 3;
-            avgY2 = (verts[a + 1][b][1] + verts[a][b + 1][1] + verts[a + 1][b + 1][1]) / 3;
-            c.fillStyle = getPixelColor(avgX2, avgY2);
-
-				c.moveTo(verts[a + 1][b][0], verts[a + 1][b][1]);
-				c.lineTo(verts[a][b + 1][0], verts[a][b + 1][1]);
-				c.lineTo(verts[a + 1][b + 1][0], verts[a + 1][b + 1][1]);
-            c.closePath();
-            // c.fill();
-				if (outline) {
-               c.stroke();
-            }
-
-            if (showAvgs) {
-               c.fillStyle = "black";
-               c.beginPath();
-               c.arc(avgX2, avgY2, 4, 0, Math.PI * 2);
-               c.stroke();
-            }
-			}
-		}
-	}
-}
-
-function getPixelColor(x, y) {
-   x = Math.round(x);
-   y = Math.round(y);
-	let r = imageData.data[y * (imageData.width * 4) + x * 4];
-	let g = imageData.data[y * (imageData.width * 4) + x * 4 + 1];
-	let b = imageData.data[y * (imageData.width * 4) + x * 4 + 2];
-   let a = imageData.data[y * (imageData.width * 4) + x * 4 + 3];
-   console.log(x,y,"rgba(" + r + "," + g + "," + b + "," + a + ")");
-   return "rgba(" + r + "," + g + "," + b + "," + a + ")";
-}
 
 document.querySelector(".height").addEventListener("input", function () {
 	canvasSize[1] = this.value;
@@ -191,10 +39,29 @@ document.querySelector(".width").addEventListener("input", function () {
 	canvasSize[0] = this.value;
 	canvas.setAttribute("width", canvasSize[0]);
 });
-function setCanvas() {
-	canvas.setAttribute("width", canvasSize[0]);
-	canvas.setAttribute("height", canvasSize[1]);
-}
+
+document.querySelector(".rotation").addEventListener("input", function () {
+	gradAngle = parseInt(this.value);
+   createGradient();
+   drawBoxes();
+});
+
+document.querySelector(".variance").addEventListener("input", function () {
+   variance = parseInt(this.value);
+   c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+   generateVertices();
+   // drawBoxes();
+});
+
+
+
+/*
+===================================================================================
+
+MODAL
+
+===================================================================================
+*/
 
 document.querySelector(".palette").addEventListener("click", function () {
 	document.querySelector(".color-modal").style.opacity = "1";
@@ -246,6 +113,161 @@ document.querySelector(".modal-add").addEventListener("click", function () {
 	showColorPalette(true);
 });
 
+
+
+
+
+
+
+
+/*
+===================================================================================
+
+FUNCTIONS
+
+===================================================================================
+*/
+
+function generateVertices() {
+	// vertCount[0] += 2;
+	let xSpace = canvasSize[0] / (vertCount[0] - 1);
+	let ySpace = canvasSize[1] / (vertCount[1] - 1);
+	for (let a = 0; a < vertCount[0]; a++) {
+		let col = [];
+		for (let b = 0; b < vertCount[1]; b++) {
+			let newPair = [];
+			let posNegX = Math.floor(Math.random() * 2) == 0 ? -1 : 1;
+			let posNegY = Math.floor(Math.random() * 2) == 0 ? -1 : 1;
+
+			if (b == 0) {
+				posNegY = -1;
+			}
+			if (b == vertCount[1] - 1) {
+				posNegY = 1;
+			}
+			if (a == 0) {
+				posNegX = -1;
+			}
+			if (a == vertCount[0] - 1) {
+				posNegX = 1;
+			}
+
+			let x = a * xSpace + Math.floor(Math.random() * (posNegX * (variance / 2)));
+			let y = b * ySpace + Math.floor(Math.random() * (posNegY * (variance / 2)));
+
+			newPair.push(x, y);
+			col.push(newPair);
+
+			if (showVerts) {
+				c.beginPath();
+				c.arc(x, y, 4, 0, Math.PI * 2);
+				c.fill();
+			}
+		}
+		verts.push(col);
+	}
+	// console.log(verts);
+	drawBoxes();
+}
+
+function drawBoxes() {
+   imageData = c.getImageData(0, 0, canvasSize[0], canvasSize[1]);
+   let avgX1, avgX2, avgY1, avgY2;
+	for (let a = 0; a < vertCount[0] - 1; a++) {
+		for (let b = 0; b < vertCount[1] - 1; b++) {
+			let dir = Math.floor(Math.random() * 2);
+			if (dir == 0) {
+				// \
+
+				avgX1 = (verts[a][b][0] + verts[a + 1][b][0] + verts[a + 1][b + 1][0]) / 3;
+            avgY1 = (verts[a][b][1] + verts[a + 1][b][1] + verts[a + 1][b + 1][1]) / 3;
+            c.fillStyle = getPixelColor(avgX1, avgY1);
+
+            c.beginPath();
+				c.moveTo(verts[a][b][0], verts[a][b][1]);
+				c.lineTo(verts[a + 1][b][0], verts[a + 1][b][1]);
+				c.lineTo(verts[a + 1][b + 1][0], verts[a + 1][b + 1][1]);
+            c.closePath();
+            c.fill();
+            if (outline) {
+               c.stroke();
+            }
+
+            if (showAvgs) {
+               c.fillStyle = "black";
+               c.beginPath();
+               c.arc(avgX1, avgY1, 4, 0, Math.PI * 2);
+               c.stroke();
+            }
+            
+            avgX2 = (verts[a][b][0] + verts[a][b + 1][0] + verts[a + 1][b + 1][0]) / 3;
+            avgY2 = (verts[a][b][1] + verts[a][b + 1][1] + verts[a + 1][b + 1][1]) / 3;
+            c.fillStyle = getPixelColor(avgX2, avgY2);
+
+            c.beginPath();
+				c.moveTo(verts[a][b][0], verts[a][b][1]);
+				c.lineTo(verts[a][b + 1][0], verts[a][b + 1][1]);
+				c.lineTo(verts[a + 1][b + 1][0], verts[a + 1][b + 1][1]);
+            c.closePath();
+            c.fill();
+				if (outline) {
+               c.stroke();
+            }
+
+            if (showAvgs) {
+               c.fillStyle = "black";
+               c.beginPath();
+               c.arc(avgX2, avgY2, 4, 0, Math.PI * 2);
+               c.stroke();
+            }
+			} else {
+
+				avgX1 = (verts[a][b][0] + verts[a + 1][b][0] + verts[a][b + 1][0]) / 3;
+				avgY1 = (verts[a][b][1] + verts[a + 1][b][1] + verts[a][b + 1][1]) / 3;
+            c.fillStyle = getPixelColor(avgX1, avgY1);
+
+            c.beginPath();
+				c.moveTo(verts[a][b][0], verts[a][b][1]);
+				c.lineTo(verts[a + 1][b][0], verts[a + 1][b][1]);
+				c.lineTo(verts[a][b + 1][0], verts[a][b + 1][1]);
+            c.closePath();
+            c.fill();
+            if (outline) {
+               c.stroke();
+            }
+
+            if (showAvgs) {
+               c.fillStyle = "black";
+               c.beginPath();
+               c.arc(avgX1, avgY1, 4, 0, Math.PI * 2);
+               c.stroke();
+            }
+            
+            avgX2 = (verts[a + 1][b][0] + verts[a][b + 1][0] + verts[a + 1][b + 1][0]) / 3;
+            avgY2 = (verts[a + 1][b][1] + verts[a][b + 1][1] + verts[a + 1][b + 1][1]) / 3;
+            c.fillStyle = getPixelColor(avgX2, avgY2);
+
+            c.beginPath();
+				c.moveTo(verts[a + 1][b][0], verts[a + 1][b][1]);
+				c.lineTo(verts[a][b + 1][0], verts[a][b + 1][1]);
+				c.lineTo(verts[a + 1][b + 1][0], verts[a + 1][b + 1][1]);
+            c.closePath();
+            c.fill();
+				if (outline) {
+               c.stroke();
+            }
+
+            if (showAvgs) {
+               c.fillStyle = "black";
+               c.beginPath();
+               c.arc(avgX2, avgY2, 4, 0, Math.PI * 2);
+               c.stroke();
+            }
+			}
+		}
+	}
+}
+
 function showColorPalette(refreshEdit = false) {
 	for (let a = 0; a < colors.length; a++) {
 		if (!refreshEdit) {
@@ -285,7 +307,6 @@ function showColorPalette(refreshEdit = false) {
 
 function createGradient() {
 	let grad, x1, y1, x2, y2, xCenterOffset, yCenterOffset;
-	// console.log(colors);
 	if (radialGradient) {
 	} else {
 		let intercepting;
@@ -336,10 +357,6 @@ function createGradient() {
 				y2 = canvasSize[1] - y1;
 			}
 		}
-
-		// Debug.innerHTML = radToDeg(Math.PI-idealDiagonal).toFixed(2) + " -- "+half+" -- "+radToDeg(idealDiagonal).toFixed(2)+"<br/>"+intercepting+"<br/>"+xCenterOffset+" -- "+yCenterOffset;
-
-		// Debug.innerHTML += "<br/>" + "The line derived from angle "+ gradAngle+ " starts at ("+ x1.toFixed(1)+ ","+ y1.toFixed(1)+ ") and ends at ("+ x2.toFixed(1)+ ","+y2.toFixed(1)+ ")";
 		grad = c.createLinearGradient(x1, y1, x2, y2);
 		for (let c = 0; c < colors.length; c++) {
 			let pos = (1 / (colors.length - 1)) * c;
@@ -348,21 +365,22 @@ function createGradient() {
 	}
 	c.fillStyle = grad;
 	c.fillRect(0, 0, canvasSize[0], canvasSize[1]);
-	c.fillStyle = "black";
+   c.fillStyle = "black";
+}
 
-	// // c.moveTo(x1, y1);
-	// c.beginPath();
-	// c.arc(x1, y1, 5, 0, Math.PI * 2);
-	// c.fill();
+function getPixelColor(x, y) {
+   x = Math.round(x);
+   y = Math.round(y);
+	let r = imageData.data[y * (imageData.width * 4) + x * 4];
+	let g = imageData.data[y * (imageData.width * 4) + x * 4 + 1];
+	let b = imageData.data[y * (imageData.width * 4) + x * 4 + 2];
+   let a = imageData.data[y * (imageData.width * 4) + x * 4 + 3];
+   return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+}
 
-	// // c.moveTo(x2, y2);
-	// c.beginPath();
-	// c.arc(x2, y2, 5, 0, Math.PI * 2);
-	// c.fill();
-
-	// c.moveTo(x1, y1);
-	// c.lineTo(x2, y2);
-	// c.stroke();
+function setCanvas() {
+	canvas.setAttribute("width", canvasSize[0]);
+	canvas.setAttribute("height", canvasSize[1]);
 }
 
 function degToRad(deg) {
@@ -371,6 +389,7 @@ function degToRad(deg) {
 function radToDeg(rad) {
 	return (rad * 180) / Math.PI;
 }
+
 
 setCanvas();
 showColorPalette();
