@@ -15,6 +15,7 @@ let colors = [];
 let palettes = [
    ["#eb640a", "#faffad", "#c7ffad", "#98fb6a", "#53c021", "#084200"]
 ];
+let defaultPalette = ["#eb640a", "#faffad", "#c7ffad", "#98fb6a", "#53c021", "#084200"];
 
 let verts = [];
 let avgs = [];
@@ -40,6 +41,7 @@ let defaults = {
    vertCount: [20, 10],
    randColor: 0,
    brightnessBalance: 0,
+   brightnessInput: 50
 };
 
 
@@ -48,13 +50,8 @@ let Debug = document.querySelector(".debug");
 
 // to do:
 /* 
-- export
 - radial / linear grad
 - outline control
-- save functionality
-- multiple palettes
-- light/dark balance (similar to randomness but only brightness)
-
 */
 
 /*
@@ -249,6 +246,92 @@ document.querySelector(".export").addEventListener("click", function () {
    newWindow.document.write("<img src='" + img + "' />");
 });
 
+document.querySelector(".save-palettes").addEventListener("click", function () {
+   localStorage.setItem("palettes", JSON.stringify(palettes));
+});
+
+/*
+===================================================================================
+
+SAVE / RESET
+
+===================================================================================
+*/
+
+document.querySelector(".save-rotation").addEventListener("click", function () {
+   localStorage.setItem("rotation", JSON.stringify(gradAngle));
+});
+document.querySelector(".reset-rotation").addEventListener("click", function () {
+   document.querySelector(".rotation").value = defaults.gradAngle;
+   localStorage.setItem("rotation", JSON.stringify(defaults.gradAngle));
+   gradAngle = defaults.gradAngle;
+   arrowDir = 0;
+   // clear btns
+   createGradient();
+   drawBoxes();
+});
+
+document.querySelector(".save-variance").addEventListener("click", function () {
+   localStorage.setItem("variance", JSON.stringify(variance));
+});
+document.querySelector(".reset-variance").addEventListener("click", function () {
+   document.querySelector(".variance").value = defaults.variance;
+   localStorage.setItem("variance", JSON.stringify(defaults.variance));
+   variance = defaults.variance;
+   c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+   verts = [];
+   createGradient();
+   generateVertices();
+});
+
+document.querySelector(".save-x").addEventListener("click", function () {
+   localStorage.setItem("x", JSON.stringify(vertCount[0]));
+});
+document.querySelector(".reset-x").addEventListener("click", function () {
+   document.querySelector(".size-x").value = defaults.vertCount[0];
+   localStorage.setItem("x", JSON.stringify(defaults.vertCount[0]));
+   vertCount[0] = defaults.vertCount[0];
+   c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+   verts = [];
+   createGradient();
+   generateVertices();
+});
+
+document.querySelector(".save-y").addEventListener("click", function () {
+   localStorage.setItem("y", JSON.stringify(vertCount[1]));
+});
+document.querySelector(".reset-y").addEventListener("click", function () {
+   document.querySelector(".size-y").value = defaults.vertCount[1];
+   localStorage.setItem("y", JSON.stringify(defaults.vertCount[1]));
+   vertCount[1] = defaults.vertCount[1];
+   c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+   verts = [];
+   createGradient();
+   generateVertices();
+});
+document.querySelector(".save-rand").addEventListener("click", function () {
+   localStorage.setItem("randColor", JSON.stringify(randColor));
+});
+document.querySelector(".reset-rand").addEventListener("click", function () {
+   document.querySelector(".randomness").value = defaults.randColor;
+   localStorage.setItem("randColor", JSON.stringify(defaults.randColor));
+   randColor = defaults.randColor;
+   c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+   createGradient();
+   drawBoxes();
+});
+
+document.querySelector(".save-brightness").addEventListener("click", function () {
+   localStorage.setItem("brightness", JSON.stringify(brightnessBalance));
+});
+document.querySelector(".reset-brightness").addEventListener("click", function () {
+   document.querySelector(".brightness").value = defaults.brightnessInput;
+   localStorage.setItem("brightness", JSON.stringify(defaults.brightnessBalance));
+   brightnessBalance = defaults.brightnessBalance;
+   c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+   createGradient();
+   drawBoxes();
+});
 
 
 
@@ -629,6 +712,36 @@ function getPixelColor(x, y) {
    return "rgba(" + r + "," + g + "," + b + "," + a + ")";
 }
 
+function loadSaved() {
+   if (localStorage.getItem("rotation")) {
+      gradAngle = JSON.parse(localStorage.getItem("rotation"));
+   }
+   if (localStorage.getItem("x")) {
+      vertCount[0] = JSON.parse(localStorage.getItem("x"));
+   }
+   if (localStorage.getItem("y")) {
+      vertCount[1] = JSON.parse(localStorage.getItem("y"));
+   }
+   if (localStorage.getItem("variance")) {
+      variance = JSON.parse(localStorage.getItem("variance"));
+   }
+   if (localStorage.getItem("variance")) {
+      randColor = JSON.parse(localStorage.getItem("variance"));
+   }
+   if (localStorage.getItem("brightness")) {
+      brightnessBalance = JSON.parse(localStorage.getItem("brightness"));
+   }
+}
+
+function loadPalettes() {
+   if (localStorage.getItem("palettes")) {
+      palettes = JSON.parse(localStorage.getItem("palettes"));
+   }
+   if (palettes.length == 0) {
+      palettes.push(defaultPalette);
+   }
+}
+
 function adjustAngle() {
    let diag = radToDeg(Math.atan(canvasSize[1] / canvasSize[0]));
    arrowAngles.d.push(diag, 180 - diag, diag + 180, 360 - diag);
@@ -647,8 +760,9 @@ function radToDeg(rad) {
 }
 
 
+loadSaved();
+loadPalettes();
 setCanvas();
-// updateModalColors();
 displayPalettes();
 createGradient();
 generateVertices();
