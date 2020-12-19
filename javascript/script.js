@@ -235,7 +235,19 @@ document.querySelector(".save-new").addEventListener("click", function () {
    createNewPalette();
 });
 
+/*
+===================================================================================
 
+TOOLS 
+
+===================================================================================
+*/
+
+document.querySelector(".export").addEventListener("click", function () {
+   let img = canvas.toDataURL();
+   let newWindow = window.open("about:blank", "image from canvas");
+   newWindow.document.write("<img src='" + img + "' />");
+});
 
 
 
