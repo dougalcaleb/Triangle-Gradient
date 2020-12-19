@@ -23,9 +23,9 @@ let rangeSettings = {
 	vertCount: [20, 10],
 	outlineColor: "",
    outlineOpacity: 0,
-   radialX: 0,
-   radialY: 0,
-   radialSize: 0,
+   radialX: 1,
+   radialY: 1,
+   radialSize: Math.max(canvasSize[0], canvasSize[1]),
 };
 
 //(rangeSettings.radialX, rangeSettings.radialY, 0, rangeSettings.radialEX, rangeSettings.radialEY, rangeSettings.radialSize)
@@ -38,9 +38,6 @@ let gradMode = "calculate"; // snap or calculate -- doesn't work
 let outline = true;
 let showVerts = false;
 let showAvgs = false;
-
-// let outlineOpacity = 0;
-// let outlineColor = "0,0,0";
 
 let arrowSuffix = "s";
 let arrowAngles = {
@@ -59,14 +56,13 @@ let defaults = {
    brightnessInput: 50,
    radialX: canvasSize[0] / 2,
    radialY: canvasSize[1] / 2,
-   radialSize: Math.max(canvasSize[0] / 2, canvasSize[1] / 2),
+   radialSize: Math.max(canvasSize[0], canvasSize[1]),
 };
 
 let Debug = document.querySelector(".debug");
 
 // to do:
 /* 
-- radial / linear grad
 - snap rot buttons colored
 - add radials to save
 */
@@ -106,6 +102,8 @@ document.querySelector(".select-radial").addEventListener("click", function () {
       document.querySelector(".snapper").classList.add("disabled");
       document.querySelector(".disabler").classList.add("enabled-disabler");
       radialGradient = true;
+      createGradient();
+		drawBoxes();
    }
 });
 
@@ -120,6 +118,8 @@ document.querySelector(".select-linear").addEventListener("click", function () {
       document.querySelector(".snapper").classList.remove("disabled");
       document.querySelector(".disabler").classList.remove("enabled-disabler");
       radialGradient = false;
+      createGradient();
+		drawBoxes();
    }
 });
 
@@ -374,6 +374,7 @@ document.querySelector(".reset-y").addEventListener("click", function () {
 	createGradient();
 	generateVertices();
 });
+
 document.querySelector(".save-rand").addEventListener("click", function () {
 	localStorage.setItem("randColor", JSON.stringify(rangeSettings.randColor));
 });
@@ -393,6 +394,42 @@ document.querySelector(".reset-brightness").addEventListener("click", function (
 	document.querySelector(".brightness").value = defaults.brightnessInput;
 	localStorage.setItem("brightness", JSON.stringify(defaults.brightnessBalance));
 	rangeSettings.brightnessBalance = defaults.brightnessBalance;
+	c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+	createGradient();
+	drawBoxes();
+});
+
+document.querySelector(".save-radx").addEventListener("click", function () {
+	localStorage.setItem("radialx", JSON.stringify(rangeSettings.radialX));
+});
+document.querySelector(".reset-radx").addEventListener("click", function () {
+	document.querySelector(".radial-x").value = defaults.radialX;
+	localStorage.setItem("radialx", JSON.stringify(defaults.radialX));
+	rangeSettings.radialX = defaults.radialX;
+	c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+	createGradient();
+	drawBoxes();
+});
+
+document.querySelector(".save-rady").addEventListener("click", function () {
+	localStorage.setItem("radialy", JSON.stringify(rangeSettings.radialY));
+});
+document.querySelector(".reset-rady").addEventListener("click", function () {
+	document.querySelector(".radial-y").value = defaults.radialY;
+	localStorage.setItem("radialy", JSON.stringify(defaults.radialY));
+	rangeSettings.radialY = defaults.radialY;
+	c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+	createGradient();
+	drawBoxes();
+});
+
+document.querySelector(".save-radsize").addEventListener("click", function () {
+	localStorage.setItem("radialsize", JSON.stringify(rangeSettings.radialSize));
+});
+document.querySelector(".reset-radsize").addEventListener("click", function () {
+	document.querySelector(".randomness").value = defaults.radialSize;
+	localStorage.setItem("radialsize", JSON.stringify(defaults.radialSize));
+	rangeSettings.radialSize = defaults.radialSize;
 	c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
 	createGradient();
 	drawBoxes();
@@ -811,6 +848,18 @@ function loadSaved() {
 	if (localStorage.getItem("brightness") != undefined) {
 		rangeSettings.brightnessBalance = JSON.parse(localStorage.getItem("brightness"));
 		document.querySelector(".brightness").value = 50 + rangeSettings.brightnessBalance;
+   }
+   if (localStorage.getItem("radialx") != undefined) {
+		rangeSettings.radialX = JSON.parse(localStorage.getItem("radialx"));
+		document.querySelector(".radial-x").value = rangeSettings.radialX;
+   }
+   if (localStorage.getItem("radialy") != undefined) {
+		rangeSettings.radialY = JSON.parse(localStorage.getItem("radialy"));
+		document.querySelector(".radial-y").value = rangeSettings.radialY;
+   }
+   if (localStorage.getItem("radialsize") != undefined) {
+		rangeSettings.radialSize = JSON.parse(localStorage.getItem("radialsize"));
+		document.querySelector(".radial-size").value = rangeSettings.radialSize;
 	}
 }
 
@@ -834,6 +883,7 @@ function setCanvas() {
    document.querySelector(".radial-x").setAttribute("max", canvasSize[0]);
    document.querySelector(".radial-y").setAttribute("max", canvasSize[1]);
    document.querySelector(".radial-size").setAttribute("max", Math.max(canvasSize[0], canvasSize[1]));
+   document.querySelector(".radial-size").setAttribute("value", Math.max(canvasSize[0], canvasSize[1]));
 }
 
 function degToRad(deg) {
@@ -931,9 +981,9 @@ function updateSettings() {
 	}
 }
 
+setCanvas();
 loadSaved();
 loadPalettes();
-setCanvas();
 displayPalettes();
 createGradient();
 generateVertices();
