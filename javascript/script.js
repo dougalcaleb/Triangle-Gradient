@@ -3,14 +3,9 @@ let c = canvas.getContext("2d");
 let imageData;
 
 // controls
-// let variance = 100;
-// let vertCount = [20, 10];
 let lineColor = "rgba(0,0,0,0)";
 let canvasSize = [2560, 1440];
-// let gradAngle = 0;
 let radialGradient = false;
-// let randColor = 0;
-// let brightnessBalance = 0;
 let colors = [];
 let palettes = [["#eb640a", "#faffad", "#c7ffad", "#98fb6a", "#53c021", "#084200"]];
 let defaultPalette = ["#eb640a", "#faffad", "#c7ffad", "#98fb6a", "#53c021", "#084200"];
@@ -27,8 +22,6 @@ let rangeSettings = {
    radialY: 1,
    radialSize: Math.max(canvasSize[0], canvasSize[1]),
 };
-
-//(rangeSettings.radialX, rangeSettings.radialY, 0, rangeSettings.radialEX, rangeSettings.radialEY, rangeSettings.radialSize)
 
 let verts = [];
 let avgs = [];
@@ -58,14 +51,6 @@ let defaults = {
    radialY: canvasSize[1] / 2,
    radialSize: Math.max(canvasSize[0], canvasSize[1]),
 };
-
-let Debug = document.querySelector(".debug");
-
-// to do:
-/* 
-- snap rot buttons colored
-- add radials to save
-*/
 
 /*
 ===================================================================================
@@ -126,39 +111,26 @@ document.querySelector(".select-linear").addEventListener("click", function () {
 document.querySelector(".rotation").addEventListener("input", function () {
 	rangeSettings.gradAngle = parseInt(this.value);
 	arrowDir = 0;
-	// clear btns
-	// createGradient();
-	// drawBoxes();
 });
 
 document.querySelector(".variance").addEventListener("input", function () {
 	rangeSettings.variance = parseInt(this.value);
-	// createGradient();
-	// generateVertices();
 });
 
 document.querySelector(".randomness").addEventListener("input", function () {
 	rangeSettings.randColor = parseInt(this.value);
-	// createGradient();
-	// drawBoxes();
 });
 
 document.querySelector(".brightness").addEventListener("input", function () {
 	rangeSettings.brightnessBalance = parseInt(this.value) - 50;
-	// createGradient();
-	// drawBoxes();
 });
 
 document.querySelector(".size-x").addEventListener("input", function () {
 	rangeSettings.vertCount[0] = parseInt(this.value);
-	// createGradient();
-	// generateVertices();
 });
 
 document.querySelector(".size-y").addEventListener("input", function () {
 	rangeSettings.vertCount[1] = parseInt(this.value);
-	// createGradient();
-	// generateVertices();
 });
 
 document.querySelector(".snap-diagonal").addEventListener("click", function () {
@@ -226,14 +198,10 @@ document.querySelector(".outline-color").addEventListener("input", function () {
 	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(this.value);
 	rangeSettings.outlineColor = parseInt(result[1], 16) + "," + parseInt(result[2], 16) + "," + parseInt(result[3], 16);
 	lineColor = "rgba(" + rangeSettings.outlineColor + "," + rangeSettings.outlineOpacity + ")";
-	// createGradient();
-	// drawBoxes();
 });
 document.querySelector(".opacity").addEventListener("input", function () {
 	rangeSettings.outlineOpacity = parseInt(this.value) / 100;
 	lineColor = "rgba(" + rangeSettings.outlineColor + "," + rangeSettings.outlineOpacity + ")";
-	// createGradient();
-	// drawBoxes();
 });
 
 /*
@@ -252,9 +220,6 @@ document.querySelector(".modal-confirm").addEventListener("click", function () {
 	colors = [];
 	colors = tempColors.concat();
 	tempColors = [];
-	// while (document.querySelector(".palette").firstChild) {
-	// 	document.querySelector(".palette").removeChild(document.querySelector(".palette").firstChild);
-	// }
 	c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
 	verts = [];
 	updatePalette(editingPalette);
@@ -331,7 +296,6 @@ document.querySelector(".reset-rotation").addEventListener("click", function () 
 	localStorage.setItem("rotation", JSON.stringify(defaults.gradAngle));
 	rangeSettings.gradAngle = defaults.gradAngle;
 	arrowDir = 0;
-	// clear btns
 	createGradient();
 	drawBoxes();
 });
@@ -967,7 +931,6 @@ function updateSettings() {
 			}
 		} else {
          if (key.toString() == "vertCount") {
-            // console.log(rangeSettings.vertCount, previous.vertCount);
             if (rangeSettings.vertCount[0] !== previous.vertCount[0] || rangeSettings.vertCount[1] !== previous.vertCount[1]) {
                previous.vertCount[0] = JSON.parse(JSON.stringify(rangeSettings.vertCount[0]));
                previous.vertCount[1] = JSON.parse(JSON.stringify(rangeSettings.vertCount[1]));
