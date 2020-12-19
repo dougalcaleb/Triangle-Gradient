@@ -16,33 +16,96 @@
 	<body>
 		<div class="controls">
 			<div class="control text-input">
-				<p class="desc">HEIGHT</p>
-				<input type="number" id="height" class="height" value="1440" />
+				<div class="control-section flex-1">
+					<p class="desc">HEIGHT</p>
+					<input type="number" id="height" class="height" value="1440" />
+				</div>
+				<div class="control-section flex-1">
+					<p class="desc">WIDTH</p>
+					<input type="number" id="width" class="width" value="2560" />
+				</div>
 			</div>
-			<div class="control text-input">
-				<p class="desc">WIDTH</p>
-				<input type="number" id="width" class="width" value="2560" />
-			</div>
+			<!-- <div class="control text-input">
+				
+			</div> -->
 			<div class="control range-input">
-				<p class="desc">GRADIENT ROTATION</p>
+				<p class="desc">GRADIENT ROTATION</p> <div class="save-btn save-rotation action-btn">Save</div> <div class="reset-btn reset-rotation action-btn">Reset</div>
 				<input type="range" id="rotation" class="rotation" min="0" max="360" step="1" value="0" />
 			</div>
-			<div class="control range-input">
-				<p class="desc">VERTEX VARIANCE</p>
-				<input type="range" id="variance" class="variance" min="0" max="120" step="1" value="30" />
+			<div class="control grad-options">
+				<div class="control-section flex-1">
+					<p class="desc">GRADIENT TYPE</p>
+					<!-- <input type="checkbox" id="gradType" class="gradType" /> -->
+					<div class="btn-wrap">
+						<div class="btn-connect btn-left btn-selected">LINEAR</div>
+						<div class="btn-connect btn-right">RADIAL</div>
+					</div>
+				</div>
+				<div class="control-section flex-2">
+					<p class="desc">SNAP ROTATION</p>
+					<div class="btn-wrap">
+						<div class="btn-connect btn-left btn-selected snap-straight">STRAIGHT</div>
+						<div class="btn-connect btn-right snap-diagonal">DIAGONAL</div>
+					</div>
+					<div class="btn-wrap">
+						<div class="btn-connect btn-left arrows arrow-1-s arrow-1">
+							<svg viewBox="0 0 24 24">
+								<path fill="currentColor" d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z" />
+							</svg>
+						</div>
+						<div class="btn-connect btn-middle arrows arrow-2-s arrow-2">
+							<svg viewBox="0 0 24 24">
+								<path fill="currentColor" d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z" />
+							</svg>
+						</div>
+						<div class="btn-connect btn-middle arrows arrow-3-s arrow-3">
+							<svg viewBox="0 0 24 24">
+								<path fill="currentColor" d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z" />
+							</svg>
+						</div>
+						<div class="btn-connect btn-right arrows arrow-4-s arrow-4">
+							<svg viewBox="0 0 24 24">
+								<path fill="currentColor" d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z" />
+							</svg>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="control range-input">
-				<p class="desc">X VERTICES</p>
-				<input type="range" id="size" class="size" min="5" max="100" step="1" value="40" />
+				<p class="desc">VERTEX VARIANCE</p> <div class="save-btn save-variance action-btn">Save</div> <div class="reset-btn reset-variance action-btn">Reset</div>
+				<input type="range" id="variance" class="variance" min="0" max="200" step="1" value="100" />
 			</div>
 			<div class="control range-input">
-				<p class="desc">Y VERTICES</p>
-				<input type="range" id="size" class="size" min="5" max="100" step="1" value="20" />
+				<p class="desc">X VERTICES</p> <div class="save-btn save-x action-btn">Save</div> <div class="reset-btn reset-x action-btn">Reset</div>
+				<input type="range" id="size" class="size-x" min="5" max="100" step="1" value="20" />
+			</div>
+			<div class="control range-input">
+				<p class="desc">Y VERTICES</p> <div class="save-btn save-y action-btn">Save</div> <div class="reset-btn reset-y action-btn">Reset</div>
+				<input type="range" id="size" class="size-y" min="5" max="100" step="1" value="10" />
+			</div>
+			<div class="control range-input">
+				<p class="desc">COLOR RANDOMNESS</p> <div class="save-btn save-rand action-btn">Save</div> <div class="reset-btn reset-rand action-btn">Reset</div>
+				<input type="range" id="size" class="randomness" min="0" max="255" step="1" value="0" />
+         </div>
+         <div class="control range-input">
+				<p class="desc">BRIGHTNESS RANDOMNESS</p> <div class="save-btn save-brightness action-btn">Save</div> <div class="reset-btn reset-brightness action-btn">Reset</div>
+				<input type="range" id="size" class="brightness" min="0" max="100" step="1" value="50" />
 			</div>
 
-			<div class="control">
+			<div class="control palette-input">
 				<p class="desc">COLOR PALETTE</p>
-				<div class="palette">
+				</div>
+			</div>
+
+			<div class="tools">
+				<!-- <div class="btn-wrap">
+					<div class="btn-connect btn-left">SAVE SETTINGS</div>
+					<div class="btn-connect btn-middle">LOAD SETTINGS</div>
+					<div class="btn-connect btn-right">RESET SETTINGS</div>
+				</div> -->
+				<div class="btn-wrap">
+					<div class="btn-connect btn-left">SAVE PALETTES</div>
+					<div class="btn-connect btn-right">EXPORT</div>
 				</div>
 			</div>
 		</div>
@@ -74,17 +137,16 @@
 					/>
 				</svg>
 			</div>
+			<div class="save-new">SAVE AS NEW PRESET</div>
 		</div>
 
 		<div class="overlay"></div>
 
 		<div class="preview">
-         <canvas></canvas>
-         <!-- <div class="rotator"></div> -->
-         <p class="debug">debug</p>
-      </div>
-      
-      
+			<canvas></canvas>
+			<!-- <div class="rotator"></div> -->
+			<!-- <p class="debug">debug</p> -->
+		</div>
 	</body>
 
 	<script src="javascript/script.js"></script>

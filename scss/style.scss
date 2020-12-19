@@ -4,241 +4,476 @@
 	user-select: none;
 }
 body {
-   margin: 0;
-   background: whitesmoke;
-   overflow: hidden;
+	margin: 0;
+	background: whitesmoke;
+	overflow: hidden;
 }
 
 canvas {
-   background: white;
-   max-width: 90%;
-   max-height: 90%;
-   @extend %center;
+	background: white;
+	max-width: 90%;
+	max-height: 90%;
+	@extend %center;
+	box-shadow: 0px 0px 30px #aaa;
 }
 
 .preview {
-   width: 70%;
-   height: 100%;
-   position: absolute;
-   right: 0;
+	width: 70%;
+	height: 100%;
+	position: absolute;
+	right: 0;
 }
 
 .controls {
-   width: 30%;
-   height: 100%;
+	width: 30%;
+	height: calc(100% - 75px);
+	// display: flex;
+	// flex-direction: column;
+	// justify-content: space-evenly;
+	position: absolute;
+	box-shadow: 5px 0px 5px #ddd;
+	background: white;
+	overflow: auto;
+	.text-input {
+		height: 90px;
+	}
+	.range-input {
+		height: 60px;
+		// margin-bottom: 30px;
+	}
+	.palette-input {
+      // height: 80px;
+      display: flex;
+      flex-direction: column;
+	}
+	.grad-options {
+	}
+	.control {
+		width: 90%;
+		background: white;
+		position: relative;
+		margin: auto;
+		left: 0;
+		right: 0;
+		display: flex;
+		align-items: stretch;
+		justify-content: space-between;
+		margin-bottom: 10px;
+		.control-section {
+			position: relative;
+			box-sizing: border-box;
+			input[type="number"] {
+				position: relative;
+				width: calc(90% - 22px);
+				border: 1px solid #ccc;
+				padding: 10px;
+			}
+		}
+		.desc {
+			font-family: "Roboto", sans-serif;
+			font-weight: 400;
+			// font-style: italic;
+			font-size: 12px;
+			position: relative;
+			color: #777;
+			width: 100%;
+			// display: none;
+		}
+		input {
+			margin: auto;
+			border-radius: 100px;
+			background: transparent;
+			position: absolute;
+			left: 0;
+			right: 0;
+			// color: rgb(23, 140, 235);
+			outline: none;
+		}
+		input[type="range"] {
+			width: 100%;
+			border: none;
+			position: absolute;
+			bottom: 0;
+		}
+		input[type="checkbox"] {
+			position: relative;
+			height: 20px;
+			width: 20px;
+		}
+	}
+}
+
+.palette {
+   position: relative;
+   left: 0;
+   right: 0;
+   height: 40px;
+   width: 100%;
    display: flex;
-   flex-direction: column;
-   justify-content: space-evenly;
-   position: absolute;
-   box-shadow: 5px 0px 5px #ddd;
-   background: white;
-   .text-input {
-      height: 100px;
+   align-items: stretch;
+   cursor: pointer;
+   background: gray;
+   margin-bottom: 10px;
+   .p-color {
+      height: 40px;
+      flex: 1;
    }
-   .range-input {
-      height: 80px;
-   }
-   .control {
-      width: 90%;
-      background: white;
-      position: relative;
-      margin: auto;
-      left: 0;
-      right: 0;
-      p {
-         font-family: "Roboto", sans-serif;
-         font-weight: 400;
-         // font-style: italic;
-         font-size: 12px;
+   .palette-options {
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      transition: 0.1s;
+      display: flex;
+      align-items: stretch;
+      background: rgba(0,0,0,0.4);
+      opacity: 0;
+      div {
+         height: 100%;
          position: relative;
-         color: #777;
-      }
-      .palette {
-         margin: auto;
-         // background: orange;
-         position: relative;
-         left: 0;
-         right: 0;
-         height: 40px;
-         width: 100%;
-         display: flex;
-         align-items: stretch;
-         cursor: pointer;
-         .p-color {
-            height: 40px;
-            flex: 1;
+         box-sizing: border-box;
+         flex: 1;
+         transition: 0.1s;
+         &:hover {
+            background: rgba(0,0,0,0.5);
+         }
+         svg {
+            height: 20px;
+            width: 20px;
+            // color: ext.$blue;
+            color: white;
+            @extend %center;
          }
       }
-      input {
-         margin: auto;
-         border-radius: 100px;
-         background: transparent;
-         position: absolute;
-         left: 0;
-         right: 0;
-         // color: rgb(23, 140, 235);
-         outline: none;
-      }
-      input[type=range] {
-         width: 100%;
-         border: none;
-      }
-      input:not([type=range]) {
-         padding: 10px;
-         width: calc(100% - 22px);
-         border: 1px solid #aaa;
-      }
    }
+   &:hover .palette-options {
+      opacity: 1;
+   }
+}
+
+.action-btn {
+   font-family: "Ubuntu", sans-serif;
+   color: #ddd;
+   // background: orange;
+   margin-left: 10px;
+   margin-top: 20px;
+   height: 15px;
+   font-size: 12px;
+   cursor: pointer;
+   &:hover {
+      color: ext.$blue-dark;
+   }
+}
+
+.btn-wrap {
+	display: flex;
+	align-items: stretch;
+	width: 90%;
+	margin-bottom: 10px;
+	.btn-connect {
+		flex: 1;
+		box-sizing: border-box;
+		height: 30px;
+		line-height: 28px;
+		text-align: center;
+		font-family: "Roboto", sans-serif;
+		font-weight: 400;
+		font-size: 12px;
+		position: relative;
+		cursor: pointer;
+	}
+}
+
+.tools {
+	position: fixed;
+	bottom: 0;
+	padding-top: 5px;
+	background: white;
+   width: 30%;
+   height: 75px;
+	.btn-wrap {
+		position: relative;
+		left: 0;
+		right: 0;
+      margin: auto;
+      margin-bottom: 5px;
+	}
+}
+
+.arrows {
+	svg {
+		@extend %center;
+		height: 25px;
+		width: 25px;
+		transition: 0.1s;
+		// background: orange;
+	}
+}
+
+.palette-active {
+   box-sizing: border-box;
+   overflow: hidden;
+   border: 2px solid ext.$blue;
+}
+
+.arrow-1-s svg {
+	transform: rotate(90deg);
+}
+.arrow-2-s svg {
+	transform: rotate(180deg);
+}
+.arrow-3-s svg {
+	transform: rotate(270deg);
+}
+.arrow-4-s svg {
+	transform: rotate(0deg);
+}
+
+.arrow-1-d svg {
+	transform: rotate(135deg);
+}
+.arrow-2-d svg {
+	transform: rotate(225deg);
+}
+.arrow-3-d svg {
+	transform: rotate(315deg);
+}
+.arrow-4-d svg {
+	transform: rotate(45deg);
+}
+
+.btn-left {
+	border-top-left-radius: 100px;
+	border-bottom-left-radius: 100px;
+	border: 2px solid ext.$blue;
+	border-right: 1px solid ext.$blue;
+}
+.btn-middle {
+	border: 2px solid ext.$blue;
+	border-right: 1px solid ext.$blue;
+	border-left: 1px solid ext.$blue;
+}
+.btn-right {
+	border-top-right-radius: 100px;
+	border-bottom-right-radius: 100px;
+	border: 2px solid ext.$blue;
+	border-left: 1px solid ext.$blue;
+}
+.btn-selected {
+	background: ext.$blue;
+	color: white;
+}
+.btn-connect:not(.btn-selected) {
+	color: ext.$blue;
+}
+
+.flex-1 {
+	flex: 1;
+}
+.flex-2 {
+	flex: 2;
+}
+.flex-3 {
+	flex: 3;
+}
+.flex-4 {
+	flex: 4;
+}
+.flex-5 {
+	flex: 5;
 }
 
 .overlay {
-   position: absolute;
-   left: 0;
-   right: 0;
-   top: 0;
-   bottom: 0;
-   height: 100%;
-   width: 100%;
-   background: rgba(0,0,0,0.2);
-   z-index: 10;
-   visibility: hidden;
-   opacity: 0;
-   transition: 0.3s;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	height: 100%;
+	width: 100%;
+	background: rgba(0, 0, 0, 0.2);
+	z-index: 10;
+	visibility: hidden;
+	opacity: 0;
+	transition: 0.3s;
 }
 
 .color-modal {
-   position: fixed;
-   left: 0;
-   top: 0;
-   right: 0;
-   bottom: 0;
-   margin: auto;
-   z-index: 20;
-   height: 300px;
-   width: 500px;
-   box-shadow: 0px 0px 8px #555;
-   border-radius: 10px;
-   background: white;
-   opacity: 0;
-   visibility: hidden;
-   transition: 0.2s;
-   .colors-wrap {
-      height: 50px;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      bottom: 130px;
-      position: absolute;
-      .edit-color {
-         height: 40px;
-         width: 40px;
-         align-self: center;
-         margin: 5px;
-         cursor: pointer;
-         input {
-            appearance: none;
-            border: none;
-            background: transparent;
-            outline: none;
-            padding: 0;
-            height: inherit;
-            width: inherit;
-            position: relative;
-            opacity: 0;
-         }
-      }
-   }
-   .colors-edit {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      height: 30px;
-      bottom: 100px;
-      position: absolute;
-      div {
-         height: 30px;
-         width: 30px;
-         position: relative;
-         cursor: pointer;
-         margin-left: 10px;
-         margin-right: 10px;
-         svg {
-            @extend %center;
-            color: #222;
-            &:hover {
-               color: rgb(0, 118, 214);
-            }
-         }
-      }
-   }
-   .modal-button {
-      height: 30px;
-      width: 30px;
-      text-align: center;
-      color: white;
-      line-height: 30px;
-      font-family: "Roboto";
-      position: absolute;
-      border-radius: 10px;
-      cursor: pointer;
-      svg {
-         @extend %center;
-      }
-   }
-   .modal-cancel {
-      right: 20px;
-      top: 20px;
-      color: #333;
-      transition: 0.1s;
-      &:hover {
-         color: rgb(206, 34, 34);
-      }
-   }
-   .modal-confirm {
-      left: 0px;
-      right: 0px;
-      bottom: 20px;
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	z-index: 20;
+	height: 300px;
+	width: 500px;
+	box-shadow: 0px 0px 8px #555;
+	border-radius: 10px;
+	background: white;
+	opacity: 0;
+	visibility: hidden;
+	transition: 0.2s;
+	.save-new {
+		border-radius: 100px;
+		border: 2px solid ext.$blue;
+		box-sizing: border-box;
+		height: 30px;
+		line-height: 28px;
+		text-align: center;
+		font-family: "Roboto", sans-serif;
+		font-weight: 400;
+		font-size: 12px;
+		position: absolute;
+      color: ext.$blue;
+      width: 200px;
       margin: auto;
-      color: #333;
-      transition: 0.1s;
-      &:hover {
-         color: rgb(0, 118, 214);
-      }
-   }
+      left: 0;
+      right: 0;
+      cursor: pointer;
+      bottom: 20px;
+	}
+	.colors-wrap {
+		height: 50px;
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		bottom: 130px;
+		position: absolute;
+		.edit-color {
+			height: 40px;
+			width: 40px;
+			align-self: center;
+			margin: 5px;
+			cursor: pointer;
+			input {
+				appearance: none;
+				border: none;
+				background: transparent;
+				outline: none;
+				padding: 0;
+				height: inherit;
+				width: inherit;
+				position: relative;
+				opacity: 0;
+			}
+		}
+	}
+	.colors-edit {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		height: 30px;
+		bottom: 100px;
+		position: absolute;
+		div {
+			height: 30px;
+			width: 30px;
+			position: relative;
+			cursor: pointer;
+			margin-left: 10px;
+			margin-right: 10px;
+			svg {
+				@extend %center;
+				color: #222;
+				&:hover {
+					color: ext.$blue;
+				}
+			}
+		}
+	}
+	.modal-button {
+		height: 30px;
+		width: 30px;
+		text-align: center;
+		color: white;
+		line-height: 30px;
+		font-family: "Roboto";
+		position: absolute;
+		border-radius: 10px;
+		cursor: pointer;
+		svg {
+			@extend %center;
+		}
+	}
+	.modal-cancel {
+		right: 20px;
+		top: 20px;
+		color: #333;
+		transition: 0.1s;
+		&:hover {
+			color: rgb(206, 34, 34);
+		}
+	}
+	.modal-confirm {
+		right: 30px;
+		bottom: 20px;
+		color: #333;
+		transition: 0.1s;
+		&:hover {
+			color: ext.$blue;
+		}
+	}
+}
+
+input[type="range"] {
+	appearance: none;
+	&:focus {
+		outline: none;
+	}
+	&::-webkit-slider-runnable-track {
+		appearance: none;
+		border-radius: 100px;
+		height: 5px;
+		background: ext.$blue;
+	}
+	&::-webkit-slider-thumb {
+		appearance: none;
+		// background: ext.$blue;
+		// height: 15px;
+		// width: 15px;
+		// border-radius: 100%;
+		height: 0;
+		width: 0;
+		position: relative;
+		margin-top: -15px;
+		border-left: 6px solid transparent;
+		border-right: 6px solid transparent;
+		border-top: 10px solid ext.$blue-dark;
+	}
 }
 
 .rotator {
-   z-index: 10;
-   height: 20px;
-   width: 20px;
-   background: black;
-   border-radius: 100%;
-   @extend %center;
-   &:after {
-      content: "";
-      @extend %center;
-      height: 0;
-      width: 0;
-      border-top: 7px solid transparent;
-      border-bottom: 7px solid transparent;
-      border-left: 10px solid white;
-   }
-   // &:before {
-   //    content: "";
-   //    position: absolute;
-   //    left: -3000px;
-   //    right: -3000px;
-   //    top: 0;
-   //    bottom: 0;
-   //    margin: auto;
-   //    height: 3px;
-   //    width: 1200px;
-   //    background: black;
-   // }
+	z-index: 10;
+	height: 20px;
+	width: 20px;
+	background: black;
+	border-radius: 100%;
+	@extend %center;
+	&:after {
+		content: "";
+		@extend %center;
+		height: 0;
+		width: 0;
+		border-top: 7px solid transparent;
+		border-bottom: 7px solid transparent;
+		border-left: 10px solid white;
+	}
+	// &:before {
+	//    content: "";
+	//    position: absolute;
+	//    left: -3000px;
+	//    right: -3000px;
+	//    top: 0;
+	//    bottom: 0;
+	//    margin: auto;
+	//    height: 3px;
+	//    width: 1200px;
+	//    background: black;
+	// }
 }
 
 .debug {
-   width: 100%;
-   position: absolute;
-   left: 0;
+	width: 100%;
+	position: absolute;
+	left: 0;
 }

@@ -3,7 +3,7 @@
 @mixin name - function (used @include name(param))
 $name - variable
 */
-canvas, .color-modal .colors-edit div svg, .color-modal .modal-button svg, .rotator, .rotator:after {
+canvas, .palette .palette-options div svg, .arrows svg, .color-modal .colors-edit div svg, .color-modal .modal-button svg, .rotator, .rotator:after {
   position: absolute;
   left: 0;
   right: 0;
@@ -26,6 +26,7 @@ canvas {
   background: white;
   max-width: 90%;
   max-height: 90%;
+  box-shadow: 0px 0px 30px #aaa;
 }
 
 .preview {
@@ -37,19 +38,21 @@ canvas {
 
 .controls {
   width: 30%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
+  height: calc(100% - 75px);
   position: absolute;
   box-shadow: 5px 0px 5px #ddd;
   background: white;
+  overflow: auto;
 }
 .controls .text-input {
-  height: 100px;
+  height: 90px;
 }
 .controls .range-input {
-  height: 80px;
+  height: 60px;
+}
+.controls .palette-input {
+  display: flex;
+  flex-direction: column;
 }
 .controls .control {
   width: 90%;
@@ -58,28 +61,28 @@ canvas {
   margin: auto;
   left: 0;
   right: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
-.controls .control p {
+.controls .control .control-section {
+  position: relative;
+  box-sizing: border-box;
+}
+.controls .control .control-section input[type=number] {
+  position: relative;
+  width: calc(90% - 22px);
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+.controls .control .desc {
   font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-size: 12px;
   position: relative;
   color: #777;
-}
-.controls .control .palette {
-  margin: auto;
-  position: relative;
-  left: 0;
-  right: 0;
-  height: 40px;
   width: 100%;
-  display: flex;
-  align-items: stretch;
-  cursor: pointer;
-}
-.controls .control .palette .p-color {
-  height: 40px;
-  flex: 1;
 }
 .controls .control input {
   margin: auto;
@@ -93,11 +96,199 @@ canvas {
 .controls .control input[type=range] {
   width: 100%;
   border: none;
+  position: absolute;
+  bottom: 0;
 }
-.controls .control input:not([type=range]) {
-  padding: 10px;
-  width: calc(100% - 22px);
-  border: 1px solid #aaa;
+.controls .control input[type=checkbox] {
+  position: relative;
+  height: 20px;
+  width: 20px;
+}
+
+.palette {
+  position: relative;
+  left: 0;
+  right: 0;
+  height: 40px;
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+  cursor: pointer;
+  background: gray;
+  margin-bottom: 10px;
+}
+.palette .p-color {
+  height: 40px;
+  flex: 1;
+}
+.palette .palette-options {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  transition: 0.1s;
+  display: flex;
+  align-items: stretch;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+}
+.palette .palette-options div {
+  height: 100%;
+  position: relative;
+  box-sizing: border-box;
+  flex: 1;
+  transition: 0.1s;
+}
+.palette .palette-options div:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+.palette .palette-options div svg {
+  height: 20px;
+  width: 20px;
+  color: white;
+}
+.palette:hover .palette-options {
+  opacity: 1;
+}
+
+.action-btn {
+  font-family: "Ubuntu", sans-serif;
+  color: #ddd;
+  margin-left: 10px;
+  margin-top: 20px;
+  height: 15px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.action-btn:hover {
+  color: #33acbe;
+}
+
+.btn-wrap {
+  display: flex;
+  align-items: stretch;
+  width: 90%;
+  margin-bottom: 10px;
+}
+.btn-wrap .btn-connect {
+  flex: 1;
+  box-sizing: border-box;
+  height: 30px;
+  line-height: 28px;
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  position: relative;
+  cursor: pointer;
+}
+
+.tools {
+  position: fixed;
+  bottom: 0;
+  padding-top: 5px;
+  background: white;
+  width: 30%;
+  height: 75px;
+}
+.tools .btn-wrap {
+  position: relative;
+  left: 0;
+  right: 0;
+  margin: auto;
+  margin-bottom: 5px;
+}
+
+.arrows svg {
+  height: 25px;
+  width: 25px;
+  transition: 0.1s;
+}
+
+.palette-active {
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 2px solid #47cee4;
+}
+
+.arrow-1-s svg {
+  transform: rotate(90deg);
+}
+
+.arrow-2-s svg {
+  transform: rotate(180deg);
+}
+
+.arrow-3-s svg {
+  transform: rotate(270deg);
+}
+
+.arrow-4-s svg {
+  transform: rotate(0deg);
+}
+
+.arrow-1-d svg {
+  transform: rotate(135deg);
+}
+
+.arrow-2-d svg {
+  transform: rotate(225deg);
+}
+
+.arrow-3-d svg {
+  transform: rotate(315deg);
+}
+
+.arrow-4-d svg {
+  transform: rotate(45deg);
+}
+
+.btn-left {
+  border-top-left-radius: 100px;
+  border-bottom-left-radius: 100px;
+  border: 2px solid #47cee4;
+  border-right: 1px solid #47cee4;
+}
+
+.btn-middle {
+  border: 2px solid #47cee4;
+  border-right: 1px solid #47cee4;
+  border-left: 1px solid #47cee4;
+}
+
+.btn-right {
+  border-top-right-radius: 100px;
+  border-bottom-right-radius: 100px;
+  border: 2px solid #47cee4;
+  border-left: 1px solid #47cee4;
+}
+
+.btn-selected {
+  background: #47cee4;
+  color: white;
+}
+
+.btn-connect:not(.btn-selected) {
+  color: #47cee4;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.flex-2 {
+  flex: 2;
+}
+
+.flex-3 {
+  flex: 3;
+}
+
+.flex-4 {
+  flex: 4;
+}
+
+.flex-5 {
+  flex: 5;
 }
 
 .overlay {
@@ -131,6 +322,25 @@ canvas {
   opacity: 0;
   visibility: hidden;
   transition: 0.2s;
+}
+.color-modal .save-new {
+  border-radius: 100px;
+  border: 2px solid #47cee4;
+  box-sizing: border-box;
+  height: 30px;
+  line-height: 28px;
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  position: absolute;
+  color: #47cee4;
+  width: 200px;
+  margin: auto;
+  left: 0;
+  right: 0;
+  cursor: pointer;
+  bottom: 20px;
 }
 .color-modal .colors-wrap {
   height: 50px;
@@ -178,7 +388,7 @@ canvas {
   color: #222;
 }
 .color-modal .colors-edit div svg:hover {
-  color: #0076d6;
+  color: #47cee4;
 }
 .color-modal .modal-button {
   height: 30px;
@@ -201,15 +411,36 @@ canvas {
   color: #ce2222;
 }
 .color-modal .modal-confirm {
-  left: 0px;
-  right: 0px;
+  right: 30px;
   bottom: 20px;
-  margin: auto;
   color: #333;
   transition: 0.1s;
 }
 .color-modal .modal-confirm:hover {
-  color: #0076d6;
+  color: #47cee4;
+}
+
+input[type=range] {
+  appearance: none;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  appearance: none;
+  border-radius: 100px;
+  height: 5px;
+  background: #47cee4;
+}
+input[type=range]::-webkit-slider-thumb {
+  appearance: none;
+  height: 0;
+  width: 0;
+  position: relative;
+  margin-top: -15px;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 10px solid #33acbe;
 }
 
 .rotator {
