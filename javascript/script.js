@@ -22,8 +22,13 @@ let rangeSettings = {
 	brightnessBalance: 0,
 	vertCount: [20, 10],
 	outlineColor: "",
-	outlineOpacity: 0,
+   outlineOpacity: 0,
+   radialX: 0,
+   radialY: 0,
+   radialSize: 0,
 };
+
+//(rangeSettings.radialX, rangeSettings.radialY, 0, rangeSettings.radialEX, rangeSettings.radialEY, rangeSettings.radialSize)
 
 let verts = [];
 let avgs = [];
@@ -51,7 +56,10 @@ let defaults = {
 	vertCount: [20, 10],
 	randColor: 0,
 	brightnessBalance: 0,
-	brightnessInput: 50,
+   brightnessInput: 50,
+   radialX: canvasSize[0] / 2,
+   radialY: canvasSize[1] / 2,
+   radialSize: Math.max(canvasSize[0] / 2, canvasSize[1] / 2),
 };
 
 let Debug = document.querySelector(".debug");
@@ -59,8 +67,7 @@ let Debug = document.querySelector(".debug");
 // to do:
 /* 
 - radial / linear grad
-- outline control
-- better updating: interval, not on input
+- snap rot buttons colored
 */
 
 /*
@@ -73,15 +80,21 @@ CONTROLS
 
 document.querySelector(".height").addEventListener("input", function () {
 	canvasSize[1] = this.value;
-	canvas.setAttribute("height", canvasSize[1]);
-	// adjustAngle();
+   canvas.setAttribute("height", canvasSize[1]);
+   adjustAngle();
+   createGradient();
+   drawBoxes();
 });
 
 document.querySelector(".width").addEventListener("input", function () {
 	canvasSize[0] = this.value;
 	canvas.setAttribute("width", canvasSize[0]);
-	// adjustAngle();
+   adjustAngle();
+   createGradient();
+   drawBoxes();
 });
+
+// document.querySelector("")
 
 document.querySelector(".rotation").addEventListener("input", function () {
 	rangeSettings.gradAngle = parseInt(this.value);
@@ -257,8 +270,9 @@ TOOLS
 
 document.querySelector(".export").addEventListener("click", function () {
 	let img = canvas.toDataURL();
-	let newWindow = window.open("about:blank", "image from canvas");
-	newWindow.document.write("<img src='" + img + "' />");
+	let newWindow = window.open("New Image");
+   newWindow.document.write("<img src='" + img + "' />");
+   newWindow.document.close();
 });
 
 document.querySelector(".save-palettes").addEventListener("click", function () {
@@ -640,63 +654,64 @@ function updateModalColors() {
 
 function createGradient() {
 	colors = palettes[activePalette];
-	let grad, x1, y1, x2, y2, xCenterOffset, yCenterOffset;
-	if (radialGradient) {
-	} else {
-		let intercepting;
-		let radAngle = degToRad(rangeSettings.gradAngle);
+   let grad, x1, y1, x2, y2, xCenterOffset, yCenterOffset;
+   let intercepting;
+	let radAngle = degToRad(rangeSettings.gradAngle);
 
-		let half = rangeSettings.gradAngle % 180;
-		let idealDiagonal = Math.atan(canvasSize[1] / canvasSize[0]);
-		if (degToRad(half) > idealDiagonal && degToRad(half) < Math.PI - idealDiagonal) {
-			intercepting = "X";
-			if (gradMode == "calculate") {
-				yCenterOffset = canvasSize[1] / 2;
-				xCenterOffset = (yCenterOffset * Math.sin(Math.PI / 2 - radAngle)) / Math.sin(radAngle);
-				if (rangeSettings.gradAngle > radToDeg(idealDiagonal) && rangeSettings.gradAngle > 180) {
-					xCenterOffset *= -1;
-					yCenterOffset *= -1;
-				}
-				x1 = canvasSize[0] / 2 - xCenterOffset;
-				y1 = canvasSize[1] / 2 - yCenterOffset;
-				x2 = canvasSize[0] - x1;
-				y2 = canvasSize[1] - y1;
-			} else {
-				x1 = canvasSize[0];
-				y1 = canvasSize[1];
-				x2 = canvasSize[0] - x1;
-				y2 = canvasSize[1] - y1;
+	let half = rangeSettings.gradAngle % 180;
+	let idealDiagonal = Math.atan(canvasSize[1] / canvasSize[0]);
+	if (degToRad(half) > idealDiagonal && degToRad(half) < Math.PI - idealDiagonal) {
+		intercepting = "X";
+		if (gradMode == "calculate") {
+			yCenterOffset = canvasSize[1] / 2;
+			xCenterOffset = (yCenterOffset * Math.sin(Math.PI / 2 - radAngle)) / Math.sin(radAngle);
+			if (rangeSettings.gradAngle > radToDeg(idealDiagonal) && rangeSettings.gradAngle > 180) {
+				xCenterOffset *= -1;
+				yCenterOffset *= -1;
 			}
+			x1 = canvasSize[0] / 2 - xCenterOffset;
+			y1 = canvasSize[1] / 2 - yCenterOffset;
+			x2 = canvasSize[0] - x1;
+			y2 = canvasSize[1] - y1;
 		} else {
-			intercepting = "Y";
-			if (gradMode == "calculate") {
-				xCenterOffset = canvasSize[0] / 2;
-				yCenterOffset = (xCenterOffset * Math.sin(radAngle)) / Math.sin(Math.PI / 2 - radAngle);
-				if (rangeSettings.gradAngle > 180 - radToDeg(idealDiagonal) && rangeSettings.gradAngle < 270) {
-					xCenterOffset *= -1;
-					yCenterOffset *= -1;
-				}
-				if (rangeSettings.gradAngle == 135) {
-					xCenterOffset *= -1;
-					yCenterOffset *= -1;
-				}
-				x1 = canvasSize[0] / 2 - xCenterOffset;
-				y1 = canvasSize[1] / 2 - yCenterOffset;
-				x2 = canvasSize[0] - x1;
-				y2 = canvasSize[1] - y1;
-			} else {
-				x1 = canvasSize[0];
-				y1 = canvasSize[1];
-				x2 = canvasSize[0] - x1;
-				y2 = canvasSize[1] - y1;
-			}
+			x1 = canvasSize[0];
+			y1 = canvasSize[1];
+			x2 = canvasSize[0] - x1;
+			y2 = canvasSize[1] - y1;
 		}
-		grad = c.createLinearGradient(x1, y1, x2, y2);
-		for (let c = 0; c < colors.length; c++) {
-			let pos = (1 / (colors.length - 1)) * c;
-			grad.addColorStop(pos, colors[c]);
+	} else {
+		intercepting = "Y";
+		if (gradMode == "calculate") {
+			xCenterOffset = canvasSize[0] / 2;
+			yCenterOffset = (xCenterOffset * Math.sin(radAngle)) / Math.sin(Math.PI / 2 - radAngle);
+			if (rangeSettings.gradAngle > 180 - radToDeg(idealDiagonal) && rangeSettings.gradAngle < 270) {
+				xCenterOffset *= -1;
+				yCenterOffset *= -1;
+			}
+			if (rangeSettings.gradAngle == 135) {
+				xCenterOffset *= -1;
+				yCenterOffset *= -1;
+			}
+			x1 = canvasSize[0] / 2 - xCenterOffset;
+			y1 = canvasSize[1] / 2 - yCenterOffset;
+			x2 = canvasSize[0] - x1;
+			y2 = canvasSize[1] - y1;
+		} else {
+			x1 = canvasSize[0];
+			y1 = canvasSize[1];
+			x2 = canvasSize[0] - x1;
+			y2 = canvasSize[1] - y1;
 		}
 	}
+   if (radialGradient) {
+      grad = c.createRadialGradient(rangeSettings.radialX, rangeSettings.radialY, 0, rangeSettings.radialX, rangeSettings.radialY, rangeSettings.radialSize);
+	} else {
+      grad = c.createLinearGradient(x1, y1, x2, y2);
+   }
+   for (let c = 0; c < colors.length; c++) {
+      let pos = (1 / (colors.length - 1)) * c;
+      grad.addColorStop(pos, colors[c]);
+   }
 	c.fillStyle = grad;
 	c.fillRect(0, 0, canvasSize[0], canvasSize[1]);
 	c.fillStyle = "black";
@@ -804,7 +819,10 @@ let previous = {
 	brightnessBalance: 0,
 	vertCount: [0, 0],
 	outlineColor: "",
-	outlineOpacity: 0,
+   outlineOpacity: 0,
+   radialX: canvasSize[0] / 2,
+   radialY: canvasSize[1] / 2,
+   radialSize: Math.max(canvasSize[0] / 2, canvasSize[1] / 2),
 };
 
 function updateSettings() {
@@ -832,13 +850,6 @@ function updateSettings() {
 					createGradient();
 					drawBoxes();
 					break;
-				// case "vertCount":
-				//    console.log("a");
-
-				//    console.log("b");
-
-				//    // drawBoxes();
-				//    break;
 				case "outlineColor":
 					c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
 					createGradient();
@@ -848,7 +859,13 @@ function updateSettings() {
 					c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
 					createGradient();
 					drawBoxes();
-					break;
+               break;
+            case "radialX":
+               break;
+            case "radialY":
+               break;
+            case "radialSize":
+               break;
 			}
 		} else {
          if (key.toString() == "vertCount") {
