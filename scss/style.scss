@@ -64,7 +64,7 @@ canvas {
 		margin: auto;
 		left: 0;
 		right: 0;
-		display: flex;
+		// display: flex;
 		align-items: stretch;
 		justify-content: space-between;
 		margin-bottom: 10px;
@@ -96,7 +96,8 @@ canvas {
 			left: 0;
 			right: 0;
 			// color: rgb(23, 140, 235);
-			outline: none;
+         outline: none;
+         color: #333;
 		}
 		input[type="range"] {
 			width: 100%;
@@ -159,6 +160,9 @@ canvas {
    }
 }
 
+.reset-btn {
+   color: #ddd;
+}
 .action-btn {
    font-family: "Ubuntu", sans-serif;
    color: #ddd;
@@ -267,12 +271,36 @@ canvas {
 	border: 2px solid ext.$blue;
 	border-left: 1px solid ext.$blue;
 }
-.btn-selected {
+.btn-selected, .grad-btn-selected {
 	background: ext.$blue;
 	color: white;
 }
-.btn-connect:not(.btn-selected) {
+:not(input):not(p):not(.action-btn):not(.grad-btn):not(.btn-selected), .select-radial:not(.grad-btn-selected), .select-linear:not(.grad-btn-selected) {
 	color: ext.$blue;
+}
+
+.hidden-control {
+   display: none;
+}
+
+.control:not(.hidden-control) {
+   display: flex;
+}
+
+.disabler {
+   height: 0;
+   width: 0;
+   position: absolute;
+   z-index: 5;
+}
+.enabled-disabler {
+   background: transparent;
+   height: 100%;
+   width: 100%;
+}
+
+.disabled {
+   filter: brightness(50%);
 }
 
 .flex-1 {

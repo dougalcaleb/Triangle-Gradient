@@ -31,17 +31,30 @@
 			<div class="control range-input">
 				<p class="desc">GRADIENT ROTATION</p> <div class="save-btn save-rotation action-btn">Save</div> <div class="reset-btn reset-rotation action-btn">Reset</div>
 				<input type="range" id="rotation" class="rotation" min="0" max="360" step="1" value="0" />
+         </div>
+         <div class="control range-input radial-input-0 hidden-control">
+				<p class="desc">GRADIENT X</p> <div class="save-btn save-radx action-btn">Save</div> <div class="reset-btn reset-radx action-btn">Reset</div>
+				<input type="range" id="radial-x" class="radial-x" min="0" max="360" step="1" value="0" />
+         </div>
+         <div class="control range-input radial-input-1 hidden-control">
+				<p class="desc">GRADIENT Y</p> <div class="save-btn save-rady action-btn">Save</div> <div class="reset-btn reset-rady action-btn">Reset</div>
+				<input type="range" id="radial-y" class="radial-y" min="0" max="360" step="1" value="0" />
+         </div>
+         <div class="control range-input radial-input-2 hidden-control">
+				<p class="desc">GRADIENT RADIUS</p> <div class="save-btn save-radsize action-btn">Save</div> <div class="reset-btn reset-radsize action-btn">Reset</div>
+				<input type="range" id="radial-size" class="radial-size" min="1" max="360" step="1" value="1" />
 			</div>
 			<div class="control grad-options">
 				<div class="control-section flex-1">
 					<p class="desc">GRADIENT TYPE</p>
 					<!-- <input type="checkbox" id="gradType" class="gradType" /> -->
 					<div class="btn-wrap">
-						<div class="btn-connect btn-left btn-selected">LINEAR</div>
-						<div class="btn-connect btn-right">RADIAL</div>
+						<div class="grad-btn btn-connect btn-left grad-btn-selected select-linear">LINEAR</div>
+						<div class="grad-btn btn-connect btn-right select-radial">RADIAL</div>
 					</div>
 				</div>
-				<div class="control-section flex-2">
+				<div class="control-section flex-2 snapper">
+               <div class="disabler"></div>
 					<p class="desc">SNAP ROTATION</p>
 					<div class="btn-wrap">
 						<div class="btn-connect btn-left btn-selected snap-straight">STRAIGHT</div>

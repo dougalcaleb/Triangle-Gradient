@@ -68,6 +68,7 @@ let Debug = document.querySelector(".debug");
 /* 
 - radial / linear grad
 - snap rot buttons colored
+- add radials to save
 */
 
 /*
@@ -94,7 +95,33 @@ document.querySelector(".width").addEventListener("input", function () {
    drawBoxes();
 });
 
-// document.querySelector("")
+document.querySelector(".select-radial").addEventListener("click", function () {
+   if (!this.classList.contains("grad-btn-selected")) {
+      document.querySelector(".grad-btn-selected").classList.remove("grad-btn-selected");
+      this.classList.add("grad-btn-selected");
+      for (let a = 0; a < 3; a++) {
+         document.querySelector(".radial-input-" + a).classList.remove("hidden-control");
+      }
+      document.querySelector(".range-input").classList.add("hidden-control");
+      document.querySelector(".snapper").classList.add("disabled");
+      document.querySelector(".disabler").classList.add("enabled-disabler");
+      radialGradient = true;
+   }
+});
+
+document.querySelector(".select-linear").addEventListener("click", function () {
+   if (!this.classList.contains("grad-btn-selected")) {
+      document.querySelector(".grad-btn-selected").classList.remove("grad-btn-selected");
+      this.classList.add("grad-btn-selected");
+      for (let a = 0; a < 3; a++) {
+         document.querySelector(".radial-input-" + a).classList.add("hidden-control");
+      }
+      document.querySelector(".range-input").classList.remove("hidden-control");
+      document.querySelector(".snapper").classList.remove("disabled");
+      document.querySelector(".disabler").classList.remove("enabled-disabler");
+      radialGradient = false;
+   }
+});
 
 document.querySelector(".rotation").addEventListener("input", function () {
 	rangeSettings.gradAngle = parseInt(this.value);
@@ -106,7 +133,6 @@ document.querySelector(".rotation").addEventListener("input", function () {
 
 document.querySelector(".variance").addEventListener("input", function () {
 	rangeSettings.variance = parseInt(this.value);
-
 	// createGradient();
 	// generateVertices();
 });
@@ -159,6 +185,16 @@ document.querySelector(".snap-straight").addEventListener("click", function () {
 			document.querySelector(".arrow-" + (a + 1) + "-s").classList.remove("arrow-" + (a + 1) + "-d");
 		}
 	}
+});
+
+document.querySelector(".radial-x").addEventListener("input", function () {
+   rangeSettings.radialX = parseInt(this.value);
+});
+document.querySelector(".radial-y").addEventListener("input", function () {
+   rangeSettings.radialY = parseInt(this.value);
+});
+document.querySelector(".radial-size").addEventListener("input", function () {
+   rangeSettings.radialSize = parseInt(this.value);
 });
 
 document.querySelector(".arrow-1").addEventListener("click", function () {
@@ -537,20 +573,20 @@ function displayPalettes() {
 		let phtml = `<div class="palette-options">
                      <div class="p-o-1 palette-use palette-use-${a}">
                         <svg viewBox="0 0 24 24">
-                           <path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
+                           <path fill="white" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
                         </svg>
                      </div>
                      <div class="p-o-2 palette-edit palette-edit-${a}">
                         <svg viewBox="0 0 24 24">
                            <path
-                              fill="currentColor"
+                              fill="white"
                               d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"
                            />
                         </svg>
                      </div>
                      <div class="p-o-3 palette-delete palette-delete-${a}">
                         <svg viewBox="0 0 24 24">
-                           <path fill="currentColor" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                           <path fill="white" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
                         </svg>
                      </div>
                   </div>`;
@@ -794,7 +830,10 @@ function adjustAngle() {
 
 function setCanvas() {
 	canvas.setAttribute("width", canvasSize[0]);
-	canvas.setAttribute("height", canvasSize[1]);
+   canvas.setAttribute("height", canvasSize[1]);
+   document.querySelector(".radial-x").setAttribute("max", canvasSize[0]);
+   document.querySelector(".radial-y").setAttribute("max", canvasSize[1]);
+   document.querySelector(".radial-size").setAttribute("max", Math.max(canvasSize[0], canvasSize[1]));
 }
 
 function degToRad(deg) {
@@ -861,10 +900,19 @@ function updateSettings() {
 					drawBoxes();
                break;
             case "radialX":
+               c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+					createGradient();
+					drawBoxes();
                break;
             case "radialY":
+               c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+					createGradient();
+					drawBoxes();
                break;
             case "radialSize":
+               c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+					createGradient();
+					drawBoxes();
                break;
 			}
 		} else {
