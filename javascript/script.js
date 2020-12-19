@@ -3,17 +3,27 @@ let c = canvas.getContext("2d");
 let imageData;
 
 // controls
-let variance = 100;
-let vertCount = [20, 10];
+// let variance = 100;
+// let vertCount = [20, 10];
 let lineColor = "rgba(0,0,0,0)";
 let canvasSize = [2560, 1440];
-let gradAngle = 0;
+// let gradAngle = 0;
 let radialGradient = false;
-let randColor = 0;
-let brightnessBalance = 0;
+// let randColor = 0;
+// let brightnessBalance = 0;
 let colors = [];
 let palettes = [["#eb640a", "#faffad", "#c7ffad", "#98fb6a", "#53c021", "#084200"]];
 let defaultPalette = ["#eb640a", "#faffad", "#c7ffad", "#98fb6a", "#53c021", "#084200"];
+
+let rangeSettings = {
+	gradAngle: 0,
+	variance: 100,
+	randColor: 0,
+	brightnessBalance: 0,
+	vertCount: [20, 10],
+	outlineColor: "",
+	outlineOpacity: 0,
+};
 
 let verts = [];
 let avgs = [];
@@ -24,8 +34,8 @@ let outline = true;
 let showVerts = false;
 let showAvgs = false;
 
-let outlineOpacity = 0;
-let outlineColor = "0,0,0";
+// let outlineOpacity = 0;
+// let outlineColor = "0,0,0";
 
 let arrowSuffix = "s";
 let arrowAngles = {
@@ -64,59 +74,52 @@ CONTROLS
 document.querySelector(".height").addEventListener("input", function () {
 	canvasSize[1] = this.value;
 	canvas.setAttribute("height", canvasSize[1]);
-	adjustAngle();
+	// adjustAngle();
 });
 
 document.querySelector(".width").addEventListener("input", function () {
 	canvasSize[0] = this.value;
 	canvas.setAttribute("width", canvasSize[0]);
-	adjustAngle();
+	// adjustAngle();
 });
 
 document.querySelector(".rotation").addEventListener("input", function () {
-	gradAngle = parseInt(this.value);
+	rangeSettings.gradAngle = parseInt(this.value);
 	arrowDir = 0;
 	// clear btns
-	createGradient();
-	drawBoxes();
+	// createGradient();
+	// drawBoxes();
 });
 
 document.querySelector(".variance").addEventListener("input", function () {
-	variance = parseInt(this.value);
-	c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
-	verts = [];
-	createGradient();
-	generateVertices();
+	rangeSettings.variance = parseInt(this.value);
+
+	// createGradient();
+	// generateVertices();
 });
 
 document.querySelector(".randomness").addEventListener("input", function () {
-	randColor = parseInt(this.value);
-	c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
-	createGradient();
-	drawBoxes();
+	rangeSettings.randColor = parseInt(this.value);
+	// createGradient();
+	// drawBoxes();
 });
 
 document.querySelector(".brightness").addEventListener("input", function () {
-	brightnessBalance = parseInt(this.value) - 50;
-	c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
-	createGradient();
-	drawBoxes();
+	rangeSettings.brightnessBalance = parseInt(this.value) - 50;
+	// createGradient();
+	// drawBoxes();
 });
 
 document.querySelector(".size-x").addEventListener("input", function () {
-	vertCount[0] = parseInt(this.value);
-	c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
-	verts = [];
-	createGradient();
-	generateVertices();
+	rangeSettings.vertCount[0] = parseInt(this.value);
+	// createGradient();
+	// generateVertices();
 });
 
 document.querySelector(".size-y").addEventListener("input", function () {
-	vertCount[1] = parseInt(this.value);
-	c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
-	verts = [];
-	createGradient();
-	generateVertices();
+	rangeSettings.vertCount[1] = parseInt(this.value);
+	// createGradient();
+	// generateVertices();
 });
 
 document.querySelector(".snap-diagonal").addEventListener("click", function () {
@@ -146,44 +149,42 @@ document.querySelector(".snap-straight").addEventListener("click", function () {
 });
 
 document.querySelector(".arrow-1").addEventListener("click", function () {
-	gradAngle = arrowAngles[arrowSuffix][0];
-	document.querySelector(".rotation").value = gradAngle;
+	rangeSettings.gradAngle = arrowAngles[arrowSuffix][0];
+	document.querySelector(".rotation").value = rangeSettings.gradAngle;
 	createGradient();
 	drawBoxes();
 });
 document.querySelector(".arrow-2").addEventListener("click", function () {
-	gradAngle = arrowAngles[arrowSuffix][1];
-	document.querySelector(".rotation").value = gradAngle;
+	rangeSettings.gradAngle = arrowAngles[arrowSuffix][1];
+	document.querySelector(".rotation").value = rangeSettings.gradAngle;
 	createGradient();
 	drawBoxes();
 });
 document.querySelector(".arrow-3").addEventListener("click", function () {
-	gradAngle = arrowAngles[arrowSuffix][2];
-	document.querySelector(".rotation").value = gradAngle;
+	rangeSettings.gradAngle = arrowAngles[arrowSuffix][2];
+	document.querySelector(".rotation").value = rangeSettings.gradAngle;
 	createGradient();
 	drawBoxes();
 });
 document.querySelector(".arrow-4").addEventListener("click", function () {
-	gradAngle = arrowAngles[arrowSuffix][3];
-	document.querySelector(".rotation").value = gradAngle;
+	rangeSettings.gradAngle = arrowAngles[arrowSuffix][3];
+	document.querySelector(".rotation").value = rangeSettings.gradAngle;
 	createGradient();
 	drawBoxes();
 });
 
 document.querySelector(".outline-color").addEventListener("input", function () {
-   c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
-   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(this.value);
-   outlineColor = parseInt(result[1], 16) + "," + parseInt(result[2], 16) + "," + parseInt(result[3], 16);
-   lineColor = ("rgba(" + outlineColor + "," + outlineOpacity + ")");
-	createGradient();
-   drawBoxes();
+	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(this.value);
+	rangeSettings.outlineColor = parseInt(result[1], 16) + "," + parseInt(result[2], 16) + "," + parseInt(result[3], 16);
+	lineColor = "rgba(" + rangeSettings.outlineColor + "," + rangeSettings.outlineOpacity + ")";
+	// createGradient();
+	// drawBoxes();
 });
 document.querySelector(".opacity").addEventListener("input", function () {
-   c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
-   outlineOpacity = parseInt(this.value) / 100;
-   lineColor = ("rgba(" + outlineColor + "," + outlineOpacity + ")");
-	createGradient();
-   drawBoxes();
+	rangeSettings.outlineOpacity = parseInt(this.value) / 100;
+	lineColor = "rgba(" + rangeSettings.outlineColor + "," + rangeSettings.outlineOpacity + ")";
+	// createGradient();
+	// drawBoxes();
 });
 
 /*
@@ -273,12 +274,12 @@ SAVE / RESET
 */
 
 document.querySelector(".save-rotation").addEventListener("click", function () {
-	localStorage.setItem("rotation", JSON.stringify(gradAngle));
+	localStorage.setItem("rotation", JSON.stringify(rangeSettings.gradAngle));
 });
 document.querySelector(".reset-rotation").addEventListener("click", function () {
 	document.querySelector(".rotation").value = defaults.gradAngle;
 	localStorage.setItem("rotation", JSON.stringify(defaults.gradAngle));
-	gradAngle = defaults.gradAngle;
+	rangeSettings.gradAngle = defaults.gradAngle;
 	arrowDir = 0;
 	// clear btns
 	createGradient();
@@ -286,12 +287,12 @@ document.querySelector(".reset-rotation").addEventListener("click", function () 
 });
 
 document.querySelector(".save-variance").addEventListener("click", function () {
-	localStorage.setItem("variance", JSON.stringify(variance));
+	localStorage.setItem("variance", JSON.stringify(rangeSettings.variance));
 });
 document.querySelector(".reset-variance").addEventListener("click", function () {
 	document.querySelector(".variance").value = defaults.variance;
 	localStorage.setItem("variance", JSON.stringify(defaults.variance));
-	variance = defaults.variance;
+	rangeSettings.variance = defaults.variance;
 	c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
 	verts = [];
 	createGradient();
@@ -299,12 +300,12 @@ document.querySelector(".reset-variance").addEventListener("click", function () 
 });
 
 document.querySelector(".save-x").addEventListener("click", function () {
-	localStorage.setItem("x", JSON.stringify(vertCount[0]));
+	localStorage.setItem("x", JSON.stringify(rangeSettings.vertCount[0]));
 });
 document.querySelector(".reset-x").addEventListener("click", function () {
 	document.querySelector(".size-x").value = defaults.vertCount[0];
 	localStorage.setItem("x", JSON.stringify(defaults.vertCount[0]));
-	vertCount[0] = defaults.vertCount[0];
+	rangeSettings.vertCount[0] = defaults.vertCount[0];
 	c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
 	verts = [];
 	createGradient();
@@ -312,36 +313,36 @@ document.querySelector(".reset-x").addEventListener("click", function () {
 });
 
 document.querySelector(".save-y").addEventListener("click", function () {
-	localStorage.setItem("y", JSON.stringify(vertCount[1]));
+	localStorage.setItem("y", JSON.stringify(rangeSettings.vertCount[1]));
 });
 document.querySelector(".reset-y").addEventListener("click", function () {
 	document.querySelector(".size-y").value = defaults.vertCount[1];
 	localStorage.setItem("y", JSON.stringify(defaults.vertCount[1]));
-	vertCount[1] = defaults.vertCount[1];
+	rangeSettings.vertCount[1] = defaults.vertCount[1];
 	c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
 	verts = [];
 	createGradient();
 	generateVertices();
 });
 document.querySelector(".save-rand").addEventListener("click", function () {
-	localStorage.setItem("randColor", JSON.stringify(randColor));
+	localStorage.setItem("randColor", JSON.stringify(rangeSettings.randColor));
 });
 document.querySelector(".reset-rand").addEventListener("click", function () {
 	document.querySelector(".randomness").value = defaults.randColor;
 	localStorage.setItem("randColor", JSON.stringify(defaults.randColor));
-	randColor = defaults.randColor;
+	rangeSettings.randColor = defaults.randColor;
 	c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
 	createGradient();
 	drawBoxes();
 });
 
 document.querySelector(".save-brightness").addEventListener("click", function () {
-	localStorage.setItem("brightness", JSON.stringify(brightnessBalance));
+	localStorage.setItem("brightness", JSON.stringify(rangeSettings.brightnessBalance));
 });
 document.querySelector(".reset-brightness").addEventListener("click", function () {
 	document.querySelector(".brightness").value = defaults.brightnessInput;
 	localStorage.setItem("brightness", JSON.stringify(defaults.brightnessBalance));
-	brightnessBalance = defaults.brightnessBalance;
+	rangeSettings.brightnessBalance = defaults.brightnessBalance;
 	c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
 	createGradient();
 	drawBoxes();
@@ -356,11 +357,11 @@ MAIN
 */
 
 function generateVertices() {
-	let xSpace = canvasSize[0] / (vertCount[0] - 1);
-	let ySpace = canvasSize[1] / (vertCount[1] - 1);
-	for (let a = 0; a < vertCount[0]; a++) {
+	let xSpace = canvasSize[0] / (rangeSettings.vertCount[0] - 1);
+	let ySpace = canvasSize[1] / (rangeSettings.vertCount[1] - 1);
+	for (let a = 0; a < rangeSettings.vertCount[0]; a++) {
 		let col = [];
-		for (let b = 0; b < vertCount[1]; b++) {
+		for (let b = 0; b < rangeSettings.vertCount[1]; b++) {
 			let newPair = [];
 			let posNegX = Math.floor(Math.random() * 2) == 0 ? -1 : 1;
 			let posNegY = Math.floor(Math.random() * 2) == 0 ? -1 : 1;
@@ -368,18 +369,18 @@ function generateVertices() {
 			if (b == 0) {
 				posNegY = -1;
 			}
-			if (b == vertCount[1] - 1) {
+			if (b == rangeSettings.vertCount[1] - 1) {
 				posNegY = 1;
 			}
 			if (a == 0) {
 				posNegX = -1;
 			}
-			if (a == vertCount[0] - 1) {
+			if (a == rangeSettings.vertCount[0] - 1) {
 				posNegX = 1;
 			}
 
-			let x = a * xSpace + Math.floor(Math.random() * (posNegX * (variance / 2)));
-			let y = b * ySpace + Math.floor(Math.random() * (posNegY * (variance / 2)));
+			let x = a * xSpace + Math.floor(Math.random() * (posNegX * (rangeSettings.variance / 2)));
+			let y = b * ySpace + Math.floor(Math.random() * (posNegY * (rangeSettings.variance / 2)));
 
 			newPair.push(x, y);
 			col.push(newPair);
@@ -396,13 +397,13 @@ function generateVertices() {
 }
 
 function drawBoxes() {
-   if (outline) {
-      c.strokeStyle = lineColor;
-   }
+	if (outline) {
+		c.strokeStyle = lineColor;
+	}
 	imageData = c.getImageData(0, 0, canvasSize[0], canvasSize[1]);
 	let avgX1, avgX2, avgY1, avgY2;
-	for (let a = 0; a < vertCount[0] - 1; a++) {
-		for (let b = 0; b < vertCount[1] - 1; b++) {
+	for (let a = 0; a < rangeSettings.vertCount[0] - 1; a++) {
+		for (let b = 0; b < rangeSettings.vertCount[1] - 1; b++) {
 			let dir = Math.floor(Math.random() * 2);
 			if (dir == 0) {
 				avgX1 = (verts[a][b][0] + verts[a + 1][b][0] + verts[a + 1][b + 1][0]) / 3;
@@ -415,7 +416,7 @@ function drawBoxes() {
 				c.lineTo(verts[a + 1][b + 1][0], verts[a + 1][b + 1][1]);
 				c.closePath();
 				c.fill();
-            if (outline) {
+				if (outline) {
 					c.stroke();
 				}
 
@@ -643,16 +644,16 @@ function createGradient() {
 	if (radialGradient) {
 	} else {
 		let intercepting;
-		let radAngle = degToRad(gradAngle);
+		let radAngle = degToRad(rangeSettings.gradAngle);
 
-		let half = gradAngle % 180;
+		let half = rangeSettings.gradAngle % 180;
 		let idealDiagonal = Math.atan(canvasSize[1] / canvasSize[0]);
 		if (degToRad(half) > idealDiagonal && degToRad(half) < Math.PI - idealDiagonal) {
 			intercepting = "X";
 			if (gradMode == "calculate") {
 				yCenterOffset = canvasSize[1] / 2;
 				xCenterOffset = (yCenterOffset * Math.sin(Math.PI / 2 - radAngle)) / Math.sin(radAngle);
-				if (gradAngle > radToDeg(idealDiagonal) && gradAngle > 180) {
+				if (rangeSettings.gradAngle > radToDeg(idealDiagonal) && rangeSettings.gradAngle > 180) {
 					xCenterOffset *= -1;
 					yCenterOffset *= -1;
 				}
@@ -671,11 +672,11 @@ function createGradient() {
 			if (gradMode == "calculate") {
 				xCenterOffset = canvasSize[0] / 2;
 				yCenterOffset = (xCenterOffset * Math.sin(radAngle)) / Math.sin(Math.PI / 2 - radAngle);
-				if (gradAngle > 180 - radToDeg(idealDiagonal) && gradAngle < 270) {
+				if (rangeSettings.gradAngle > 180 - radToDeg(idealDiagonal) && rangeSettings.gradAngle < 270) {
 					xCenterOffset *= -1;
 					yCenterOffset *= -1;
 				}
-				if (gradAngle == 135) {
+				if (rangeSettings.gradAngle == 135) {
 					xCenterOffset *= -1;
 					yCenterOffset *= -1;
 				}
@@ -701,9 +702,6 @@ function createGradient() {
 	c.fillStyle = "black";
 }
 
-
-
-
 /*
 ===================================================================================
 
@@ -727,10 +725,10 @@ function getPixelColor(x, y) {
 	if (y > canvasSize[1] - 1) {
 		y = canvasSize[1] - 1;
 	}
-	let rrand = Math.floor(Math.random() * randColor) * (Math.floor(Math.random() * 2) * -1);
-	let grand = Math.floor(Math.random() * randColor) * (Math.floor(Math.random() * 2) * -1);
-	let brand = Math.floor(Math.random() * randColor) * (Math.floor(Math.random() * 2) * -1);
-	let bb = Math.floor(Math.random() * brightnessBalance);
+	let rrand = Math.floor(Math.random() * rangeSettings.randColor) * (Math.floor(Math.random() * 2) * -1);
+	let grand = Math.floor(Math.random() * rangeSettings.randColor) * (Math.floor(Math.random() * 2) * -1);
+	let brand = Math.floor(Math.random() * rangeSettings.randColor) * (Math.floor(Math.random() * 2) * -1);
+	let bb = Math.floor(Math.random() * rangeSettings.brightnessBalance);
 	let r = imageData.data[y * (imageData.width * 4) + x * 4] + rrand + bb;
 	let g = imageData.data[y * (imageData.width * 4) + x * 4 + 1] + grand + bb;
 	let b = imageData.data[y * (imageData.width * 4) + x * 4 + 2] + brand + bb;
@@ -740,28 +738,28 @@ function getPixelColor(x, y) {
 
 function loadSaved() {
 	if (localStorage.getItem("rotation") != undefined) {
-		gradAngle = JSON.parse(localStorage.getItem("rotation"));
-		document.querySelector(".rotation").value = gradAngle;
+		rangeSettings.gradAngle = JSON.parse(localStorage.getItem("rotation"));
+		document.querySelector(".rotation").value = rangeSettings.gradAngle;
 	}
 	if (localStorage.getItem("x") != undefined) {
-		vertCount[0] = JSON.parse(localStorage.getItem("x"));
-		document.querySelector(".size-x").value = vertCount[0];
+		rangeSettings.vertCount[0] = JSON.parse(localStorage.getItem("x"));
+		document.querySelector(".size-x").value = rangeSettings.vertCount[0];
 	}
 	if (localStorage.getItem("y") != undefined) {
-		vertCount[1] = JSON.parse(localStorage.getItem("y"));
-		document.querySelector(".size-y").value = vertCount[1];
+		rangeSettings.vertCount[1] = JSON.parse(localStorage.getItem("y"));
+		document.querySelector(".size-y").value = rangeSettings.vertCount[1];
 	}
 	if (localStorage.getItem("variance") != undefined) {
-		variance = JSON.parse(localStorage.getItem("variance"));
-		document.querySelector(".variance").value = variance;
+		rangeSettings.variance = JSON.parse(localStorage.getItem("variance"));
+		document.querySelector(".variance").value = rangeSettings.variance;
 	}
 	if (localStorage.getItem("randColor") != undefined) {
-		randColor = JSON.parse(localStorage.getItem("randColor"));
-		document.querySelector(".randomness").value = randColor;
+		rangeSettings.randColor = JSON.parse(localStorage.getItem("randColor"));
+		document.querySelector(".randomness").value = rangeSettings.randColor;
 	}
 	if (localStorage.getItem("brightness") != undefined) {
-		brightnessBalance = JSON.parse(localStorage.getItem("brightness"));
-		document.querySelector(".brightness").value = 50 + brightnessBalance;
+		rangeSettings.brightnessBalance = JSON.parse(localStorage.getItem("brightness"));
+		document.querySelector(".brightness").value = 50 + rangeSettings.brightnessBalance;
 	}
 }
 
@@ -799,6 +797,75 @@ UPDATER
 ===================================================================================
 */
 
+let previous = {
+	gradAngle: 0,
+	variance: 0,
+	randColor: 0,
+	brightnessBalance: 0,
+	vertCount: [0, 0],
+	outlineColor: "",
+	outlineOpacity: 0,
+};
+
+function updateSettings() {
+	for (let key in previous) {
+		if (previous[key] != rangeSettings[key] && key.toString() != "vertCount") {
+			previous[key] = JSON.parse(JSON.stringify(rangeSettings[key]));
+			switch (key.toString()) {
+				case "gradAngle":
+					createGradient();
+					drawBoxes();
+					break;
+				case "variance":
+					verts = [];
+					c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+					createGradient();
+					generateVertices();
+					break;
+				case "randColor":
+					c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+					createGradient();
+					drawBoxes();
+					break;
+				case "brightnessBalance":
+					c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+					createGradient();
+					drawBoxes();
+					break;
+				// case "vertCount":
+				//    console.log("a");
+
+				//    console.log("b");
+
+				//    // drawBoxes();
+				//    break;
+				case "outlineColor":
+					c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+					createGradient();
+					drawBoxes();
+					break;
+				case "outlineOpacity":
+					c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+					createGradient();
+					drawBoxes();
+					break;
+			}
+		} else {
+         if (key.toString() == "vertCount") {
+            // console.log(rangeSettings.vertCount, previous.vertCount);
+            if (rangeSettings.vertCount[0] !== previous.vertCount[0] || rangeSettings.vertCount[1] !== previous.vertCount[1]) {
+               previous.vertCount[0] = JSON.parse(JSON.stringify(rangeSettings.vertCount[0]));
+               previous.vertCount[1] = JSON.parse(JSON.stringify(rangeSettings.vertCount[1]));
+               verts = [];
+               c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+               createGradient();
+               generateVertices();
+            }
+			}
+		}
+	}
+}
+
 loadSaved();
 loadPalettes();
 setCanvas();
@@ -806,3 +873,5 @@ displayPalettes();
 createGradient();
 generateVertices();
 adjustAngle();
+
+setInterval(updateSettings, 50);
