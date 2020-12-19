@@ -46,8 +46,17 @@ canvas {
       display: flex;
       flex-direction: column;
 	}
-	.grad-options {
-	}
+	.outline-input {
+      height: 80px;
+      .outline-color {
+         border: none;
+         height: 40px;
+         width: 40px;
+         position: relative;
+         margin: none;
+         outline: none;
+      }
+   }
 	.control {
 		width: 90%;
 		background: white;
@@ -79,7 +88,7 @@ canvas {
 			width: 100%;
 			// display: none;
 		}
-		input {
+		input:not([type=color]) {
 			margin: auto;
 			border-radius: 100px;
 			background: transparent;

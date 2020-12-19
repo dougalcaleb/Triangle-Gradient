@@ -54,6 +54,17 @@ canvas {
   display: flex;
   flex-direction: column;
 }
+.controls .outline-input {
+  height: 80px;
+}
+.controls .outline-input .outline-color {
+  border: none;
+  height: 40px;
+  width: 40px;
+  position: relative;
+  margin: none;
+  outline: none;
+}
 .controls .control {
   width: 90%;
   background: white;
@@ -84,7 +95,7 @@ canvas {
   color: #777;
   width: 100%;
 }
-.controls .control input {
+.controls .control input:not([type=color]) {
   margin: auto;
   border-radius: 100px;
   background: transparent;
