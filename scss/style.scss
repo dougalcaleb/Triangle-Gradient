@@ -26,7 +26,7 @@ canvas {
 
 .controls {
 	width: 30%;
-	height: calc(100% - 40px);
+	height: calc(100% - 45px);
 	// display: flex;
 	// flex-direction: column;
 	// justify-content: space-evenly;
@@ -202,14 +202,14 @@ canvas {
 	padding-top: 5px;
 	background: white;
    width: 30%;
-   height: 40px;
+   height: 45px;
    box-shadow: 5px 0px 5px #ddd;
 	.btn-wrap {
 		position: relative;
 		left: 0;
 		right: 0;
       margin: auto;
-      margin-bottom: 5px;
+      top: 5px;
 	}
 }
 
