@@ -31,6 +31,7 @@ let gradMode = "calculate"; // snap or calculate -- doesn't work
 let outline = true;
 let showVerts = false;
 let showAvgs = false;
+let gradLine = true;
 
 let arrowSuffix = "s";
 let arrowAngles = {
@@ -172,26 +173,18 @@ document.querySelector(".radial-size").addEventListener("input", function () {
 document.querySelector(".arrow-1").addEventListener("click", function () {
 	rangeSettings.gradAngle = arrowAngles[arrowSuffix][0];
 	document.querySelector(".rotation").value = rangeSettings.gradAngle;
-	createGradient();
-	drawBoxes();
 });
 document.querySelector(".arrow-2").addEventListener("click", function () {
 	rangeSettings.gradAngle = arrowAngles[arrowSuffix][1];
-	document.querySelector(".rotation").value = rangeSettings.gradAngle;
-	createGradient();
-	drawBoxes();
+   document.querySelector(".rotation").value = rangeSettings.gradAngle;
 });
 document.querySelector(".arrow-3").addEventListener("click", function () {
 	rangeSettings.gradAngle = arrowAngles[arrowSuffix][2];
 	document.querySelector(".rotation").value = rangeSettings.gradAngle;
-	createGradient();
-	drawBoxes();
 });
 document.querySelector(".arrow-4").addEventListener("click", function () {
 	rangeSettings.gradAngle = arrowAngles[arrowSuffix][3];
-	document.querySelector(".rotation").value = rangeSettings.gradAngle;
-	createGradient();
-	drawBoxes();
+   document.querySelector(".rotation").value = rangeSettings.gradAngle;
 });
 
 document.querySelector(".outline-color").addEventListener("input", function () {
@@ -207,7 +200,7 @@ document.querySelector(".opacity").addEventListener("input", function () {
 /*
 ===================================================================================
 
-MODAL
+MODAL INTERACTIONS
 
 ===================================================================================
 */
@@ -270,10 +263,19 @@ TOOLS
 */
 
 document.querySelector(".export").addEventListener("click", function () {
-	let img = canvas.toDataURL();
-	let newWindow = window.open("New Image");
-   newWindow.document.write("<img src='" + img + "' />");
-   newWindow.document.close();
+
+   let downloader = document.getElementById("downloader");
+   downloader.setAttribute('download', 'Gradient.png');
+   downloader.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+   downloader.click();
+
+
+   // let img = canvas.toDataURL("image/png");
+   // let imageURL = img.replace("image/png", "image/octet-stream"); 
+	// let newWindow = window.open("New Image");
+   // newWindow.document.write("<img src='" + img + "' />");
+   // window.location.href = imageURL;
+   // newWindow.document.close();
 });
 
 document.querySelector(".save-palettes").addEventListener("click", function () {
@@ -398,6 +400,158 @@ document.querySelector(".reset-radsize").addEventListener("click", function () {
 	createGradient();
 	drawBoxes();
 });
+
+/*
+===================================================================================
+
+MODAL / PALETTES
+
+===================================================================================
+*/
+
+function createNewPalette() {
+	palettes.push(tempColors);
+	tempColors = [];
+	displayPalettes();
+}
+
+function updatePalette(id) {
+	palettes[id] = [];
+	palettes[id] = colors.concat();
+	while (document.querySelector(".palette-" + id).querySelector(".p-color")) {
+		document.querySelector(".palette-" + id).removeChild(document.querySelector(".palette-" + id).querySelector(".p-color"));
+	}
+	for (let a = 0; a < palettes[id].length; a++) {
+		let newColor = document.createElement("div");
+		newColor.classList.add("p-color");
+		newColor.style.background = palettes[id][a];
+		document.querySelector(".palette-" + id).appendChild(newColor);
+	}
+}
+
+function displayPalettes() {
+	while (document.querySelector(".palette")) {
+		document.querySelector(".palette-input").removeChild(document.querySelector(".palette"));
+	}
+	for (let a = 0; a < palettes.length; a++) {
+		let phtml = `<div class="palette-options">
+                     <div class="p-o-1 palette-use palette-use-${a}">
+                        <svg viewBox="0 0 24 24">
+                           <path fill="white" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
+                        </svg>
+                     </div>
+                     <div class="p-o-2 palette-edit palette-edit-${a}">
+                        <svg viewBox="0 0 24 24">
+                           <path
+                              fill="white"
+                              d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"
+                           />
+                        </svg>
+                     </div>
+                     <div class="p-o-3 palette-delete palette-delete-${a}">
+                        <svg viewBox="0 0 24 24">
+                           <path fill="white" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                        </svg>
+                     </div>
+                  </div>`;
+		let newP = document.createElement("div");
+		newP.classList.add("palette", `palette-${a}`);
+		newP.innerHTML = phtml;
+		document.querySelector(".palette-input").appendChild(newP);
+		document.querySelector(".palette-edit-" + a).addEventListener("click", function () {
+			document.querySelector(".color-modal").style.opacity = "1";
+			document.querySelector(".color-modal").style.visibility = "visible";
+			document.querySelector(".overlay").style.opacity = "1";
+			document.querySelector(".overlay").style.visibility = "visible";
+			tempColors = palettes[a].concat();
+			let savedId = parseInt(this.classList[2].split("-")[2]);
+			editingPalette = savedId;
+			updateModalColors(savedId);
+		});
+		document.querySelector(".palette-use-" + a).addEventListener("click", function () {
+			let savedId = parseInt(this.classList[2].split("-")[2]);
+			activePalette = a;
+			c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+			verts = [];
+			colors = palettes[savedId];
+			if (document.querySelector(".palette-active")) {
+				document.querySelector(".palette-active").classList.remove("palette-active");
+			}
+			if (!this.parentElement.parentElement.classList.contains("palette-active")) {
+				this.parentElement.parentElement.classList.add("palette-active");
+			}
+			createGradient();
+			generateVertices();
+		});
+		document.querySelector(".palette-delete-" + a).addEventListener("click", function () {
+			palettes.splice(a, 1);
+			if (palettes[a - 1]) {
+				c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+				verts = [];
+				colors = palettes[a - 1];
+				if (document.querySelector(".palette-active")) {
+					document.querySelector(".palette-active").classList.remove("palette-active");
+				}
+				if (!document.querySelector(".palette-" + (a - 1)).classList.contains("palette-active")) {
+					document.querySelector(".palette-" + (a - 1)).classList.add("palette-active");
+				}
+				createGradient();
+				generateVertices();
+			} else if (palettes[a]) {
+				c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+				verts = [];
+				colors = palettes[a];
+				if (document.querySelector(".palette-active")) {
+					document.querySelector(".palette-active").classList.remove("palette-active");
+				}
+				if (!document.querySelector(".palette-" + (a + 1)).classList.contains("palette-active")) {
+					document.querySelector(".palette-" + (a + 1)).classList.add("palette-active");
+				}
+				createGradient();
+				generateVertices();
+			}
+			this.parentElement.parentElement.remove();
+		});
+		for (let b = 0; b < palettes[a].length; b++) {
+			let newColor = document.createElement("div");
+			newColor.classList.add("p-color");
+			newColor.style.background = palettes[a][b];
+			newP.appendChild(newColor);
+		}
+	}
+}
+
+function updateModalColors() {
+	// reset modal
+	while (document.querySelector(".colors-wrap").firstChild) {
+		document.querySelector(".colors-wrap").removeChild(document.querySelector(".colors-wrap").firstChild);
+	}
+	// add all colors to modal
+	for (let b = 0; b < tempColors.length; b++) {
+		let newEditColor = document.createElement("div");
+		newEditColor.classList.add("edit-color");
+		newEditColor.style.background = tempColors[b];
+		document.querySelector(".colors-wrap").appendChild(newEditColor);
+		let newInput = document.createElement("input");
+		newInput.setAttribute("type", "color");
+		newInput.classList.add("color-input", "input-" + b);
+		newEditColor.appendChild(newInput);
+		newInput.addEventListener("blur", function () {
+			let num = parseInt(this.classList[1].split("-")[1]);
+			tempColors[num] = this.value;
+			newEditColor.style.background = this.value;
+		});
+		newInput.addEventListener("focus", function () {
+			let num = parseInt(this.classList[1].split("-")[1]);
+			this.value = tempColors[num];
+			newEditColor.style.background = this.value;
+		});
+		newInput.addEventListener("input", function () {
+			this.parentElement.style.background = this.value;
+		});
+	}
+}
+
 
 /*
 ===================================================================================
@@ -545,160 +699,15 @@ function drawBoxes() {
 	}
 }
 
-function createNewPalette() {
-	palettes.push(tempColors);
-	tempColors = [];
-	displayPalettes();
-}
-
-function updatePalette(id) {
-	palettes[id] = [];
-	palettes[id] = colors.concat();
-	console.log(palettes);
-	while (document.querySelector(".palette-" + id).querySelector(".p-color")) {
-		document.querySelector(".palette-" + id).removeChild(document.querySelector(".palette-" + id).querySelector(".p-color"));
-	}
-	for (let a = 0; a < palettes[id].length; a++) {
-		let newColor = document.createElement("div");
-		newColor.classList.add("p-color");
-		newColor.style.background = palettes[id][a];
-		document.querySelector(".palette-" + id).appendChild(newColor);
-	}
-}
-
-function displayPalettes() {
-	while (document.querySelector(".palette")) {
-		document.querySelector(".palette-input").removeChild(document.querySelector(".palette"));
-	}
-	for (let a = 0; a < palettes.length; a++) {
-		let phtml = `<div class="palette-options">
-                     <div class="p-o-1 palette-use palette-use-${a}">
-                        <svg viewBox="0 0 24 24">
-                           <path fill="white" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
-                        </svg>
-                     </div>
-                     <div class="p-o-2 palette-edit palette-edit-${a}">
-                        <svg viewBox="0 0 24 24">
-                           <path
-                              fill="white"
-                              d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"
-                           />
-                        </svg>
-                     </div>
-                     <div class="p-o-3 palette-delete palette-delete-${a}">
-                        <svg viewBox="0 0 24 24">
-                           <path fill="white" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-                        </svg>
-                     </div>
-                  </div>`;
-		let newP = document.createElement("div");
-		newP.classList.add("palette", `palette-${a}`);
-		newP.innerHTML = phtml;
-		document.querySelector(".palette-input").appendChild(newP);
-		document.querySelector(".palette-edit-" + a).addEventListener("click", function () {
-			document.querySelector(".color-modal").style.opacity = "1";
-			document.querySelector(".color-modal").style.visibility = "visible";
-			document.querySelector(".overlay").style.opacity = "1";
-			document.querySelector(".overlay").style.visibility = "visible";
-			tempColors = palettes[a].concat();
-			let savedId = parseInt(this.classList[2].split("-")[2]);
-			editingPalette = savedId;
-			updateModalColors(savedId);
-		});
-		document.querySelector(".palette-use-" + a).addEventListener("click", function () {
-			let savedId = parseInt(this.classList[2].split("-")[2]);
-			activePalette = a;
-			c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
-			verts = [];
-			colors = palettes[savedId];
-			if (document.querySelector(".palette-active")) {
-				document.querySelector(".palette-active").classList.remove("palette-active");
-			}
-			if (!this.parentElement.parentElement.classList.contains("palette-active")) {
-				this.parentElement.parentElement.classList.add("palette-active");
-			}
-			createGradient();
-			generateVertices();
-		});
-		document.querySelector(".palette-delete-" + a).addEventListener("click", function () {
-			palettes.splice(a, 1);
-			if (palettes[a - 1]) {
-				c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
-				verts = [];
-				colors = palettes[a - 1];
-				if (document.querySelector(".palette-active")) {
-					document.querySelector(".palette-active").classList.remove("palette-active");
-				}
-				if (!document.querySelector(".palette-" + (a - 1)).classList.contains("palette-active")) {
-					document.querySelector(".palette-" + (a - 1)).classList.add("palette-active");
-				}
-				createGradient();
-				generateVertices();
-			} else if (palettes[a]) {
-				c.clearRect(0, 0, canvasSize[0], canvasSize[1]);
-				verts = [];
-				colors = palettes[a];
-				if (document.querySelector(".palette-active")) {
-					document.querySelector(".palette-active").classList.remove("palette-active");
-				}
-				if (!document.querySelector(".palette-" + (a + 1)).classList.contains("palette-active")) {
-					document.querySelector(".palette-" + (a + 1)).classList.add("palette-active");
-				}
-				createGradient();
-				generateVertices();
-			}
-			this.parentElement.parentElement.remove();
-		});
-		for (let b = 0; b < palettes[a].length; b++) {
-			let newColor = document.createElement("div");
-			newColor.classList.add("p-color");
-			newColor.style.background = palettes[a][b];
-			newP.appendChild(newColor);
-		}
-	}
-}
-
-function updateModalColors() {
-	// reset modal
-	while (document.querySelector(".colors-wrap").firstChild) {
-		document.querySelector(".colors-wrap").removeChild(document.querySelector(".colors-wrap").firstChild);
-	}
-	// add all colors to modal
-	for (let b = 0; b < tempColors.length; b++) {
-		let newEditColor = document.createElement("div");
-		newEditColor.classList.add("edit-color");
-		newEditColor.style.background = tempColors[b];
-		document.querySelector(".colors-wrap").appendChild(newEditColor);
-		let newInput = document.createElement("input");
-		newInput.setAttribute("type", "color");
-		newInput.classList.add("color-input", "input-" + b);
-		newEditColor.appendChild(newInput);
-		newInput.addEventListener("blur", function () {
-			let num = parseInt(this.classList[1].split("-")[1]);
-			tempColors[num] = this.value;
-			newEditColor.style.background = this.value;
-		});
-		newInput.addEventListener("focus", function () {
-			let num = parseInt(this.classList[1].split("-")[1]);
-			this.value = tempColors[num];
-			newEditColor.style.background = this.value;
-		});
-		newInput.addEventListener("input", function () {
-			this.parentElement.style.background = this.value;
-		});
-	}
-}
-
 function createGradient() {
 	colors = palettes[activePalette];
    let grad, x1, y1, x2, y2, xCenterOffset, yCenterOffset;
-   let intercepting;
-	let radAngle = degToRad(rangeSettings.gradAngle);
+   let radAngle = degToRad(rangeSettings.gradAngle);
 
 	let half = rangeSettings.gradAngle % 180;
-	let idealDiagonal = Math.atan(canvasSize[1] / canvasSize[0]);
-	if (degToRad(half) > idealDiagonal && degToRad(half) < Math.PI - idealDiagonal) {
-		intercepting = "X";
+   let idealDiagonal = Math.atan(canvasSize[1] / canvasSize[0]);
+   
+   if (degToRad(half) > idealDiagonal && degToRad(half) < Math.PI - idealDiagonal) {
 		if (gradMode == "calculate") {
 			yCenterOffset = canvasSize[1] / 2;
 			xCenterOffset = (yCenterOffset * Math.sin(Math.PI / 2 - radAngle)) / Math.sin(radAngle);
@@ -716,12 +725,12 @@ function createGradient() {
 			x2 = canvasSize[0] - x1;
 			y2 = canvasSize[1] - y1;
 		}
-	} else {
-		intercepting = "Y";
+   } else {
+      // This is probably ok. Previous problem of TR to BL not working on 16:9 ratios, 4 lines below changed to >= from >
 		if (gradMode == "calculate") {
 			xCenterOffset = canvasSize[0] / 2;
-			yCenterOffset = (xCenterOffset * Math.sin(radAngle)) / Math.sin(Math.PI / 2 - radAngle);
-			if (rangeSettings.gradAngle > 180 - radToDeg(idealDiagonal) && rangeSettings.gradAngle < 270) {
+         yCenterOffset = (xCenterOffset * Math.sin(radAngle)) / Math.sin(Math.PI / 2 - radAngle);
+         if ((rangeSettings.gradAngle >= 180 - radToDeg(idealDiagonal)) && (rangeSettings.gradAngle < 270)) {
 				xCenterOffset *= -1;
 				yCenterOffset *= -1;
 			}
@@ -751,7 +760,15 @@ function createGradient() {
    }
 	c.fillStyle = grad;
 	c.fillRect(0, 0, canvasSize[0], canvasSize[1]);
-	c.fillStyle = "black";
+   c.fillStyle = "black";
+   // if (gradLine) {
+   //    // c.strokeStyle = "black";
+   //    c.beginPath();
+   //    c.moveTo(x1, y1);
+   //    c.lineTo(x2, y2);
+   //    c.closePath();
+   //    c.stroke();
+   // }
 }
 
 /*
@@ -883,7 +900,7 @@ function updateSettings() {
 		if (previous[key] != rangeSettings[key] && key.toString() != "vertCount") {
 			previous[key] = JSON.parse(JSON.stringify(rangeSettings[key]));
 			switch (key.toString()) {
-				case "gradAngle":
+            case "gradAngle":
 					createGradient();
 					drawBoxes();
 					break;
