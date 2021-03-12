@@ -265,14 +265,14 @@ TOOLS
 document.querySelector(".export").addEventListener("click", function () {
 
    let downloader = document.getElementById("downloader");
-   downloader.setAttribute('download', 'Gradient.png');
+   downloader.setAttribute('download', 'LowPolyGradient.png');
    downloader.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
    downloader.click();
 
 
    // let img = canvas.toDataURL("image/png");
    // let imageURL = img.replace("image/png", "image/octet-stream"); 
-	// let newWindow = window.open("New Image");
+   // let newWindow = window.open("New Image");
    // newWindow.document.write("<img src='" + img + "' />");
    // window.location.href = imageURL;
    // newWindow.document.close();
